@@ -12,15 +12,27 @@ const initialState: {
   isLoggedIn?: boolean;
   loginStatus: ThunkStatus;
   logoutStatus: ThunkStatus;
+  accessToken?: string;
+  refreshToken?: string;
 } = {
   computedRoutes: undefined,
   sidebarCollapsed: false,
   isLoggedIn: true,
   loginStatus: ThunkStatus.IDLE,
   logoutStatus: ThunkStatus.IDLE,
+  accessToken: undefined,
+  refreshToken: undefined,
 };
 
-const login = createAsyncThunk(`${name}/login`, authService.login);
+const login = createAsyncThunk(
+  `${name}/login`,
+  async (data: Parameters<typeof authService.login>[0]) => {
+    const res = await authService.login(data);
+    localStorage.setItem("accessToken", res.accessToken);
+    localStorage.setItem("refreshToken", res.refreshToken);
+    return res;
+  }
+);
 const logout = createAsyncThunk(`${name}/logout`, authService.logout);
 
 //slice
@@ -34,6 +46,12 @@ export const authSlice = createSlice({
     setComputedRoutes(state, action) {
       state.computedRoutes = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(login.fulfilled, (state, action) => {
+      state.accessToken = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
+    });
   },
 });
 

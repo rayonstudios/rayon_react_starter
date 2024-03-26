@@ -11,6 +11,7 @@ import {
   Typography,
 } from "antd";
 import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { authActions } from "../../../modules/auth/slices/auth.slice";
 import { useLang, useThemeMode } from "../../contexts/root.context";
@@ -27,7 +28,7 @@ function Header() {
   const { translations, lang, setLang } = useLang();
   const { md } = useResponsive();
   const collapsed = useAppSelector((state) => state.auth.sidebarCollapsed);
-  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
+  const { t } = useTranslation();
   const isDarkTheme = themeMode === "dark";
 
   const toggleCollapsed = useCallback(() => {
@@ -40,8 +41,8 @@ function Header() {
 
   const onLogout = useCallback(() => {
     AlertPopup({
-      title: "Logout",
-      message: "Are you sure you want to logout?",
+      title: t("logout:title"),
+      message: t("logout:message"),
       onOk: () => dispatch(authActions.logout()).unwrap(),
     });
   }, []);
