@@ -1,7 +1,10 @@
-import { Layout } from "antd";
+import { JSSTheme } from "@/lib/types/misc";
+import { isDev } from "@/lib/utils/misc.utils";
+import { cn } from "@/lib/utils/styles.utils";
+import { Layout, Typography } from "antd";
 import React, { PropsWithChildren } from "react";
 import { createUseStyles } from "react-jss";
-import { JSSTheme } from "../../types/misc";
+import pkgJson from "../../../../package.json";
 import EmptyLayout from "../EmptyLayout";
 import Header from "./Header";
 import Sidebar from "./sidebar";
@@ -17,6 +20,9 @@ const useStyles = createUseStyles((theme: JSSTheme) => ({
     },
     color: theme.colorText,
   },
+  footer: {
+    backgroundColor: theme.colorPrimaryBg,
+  },
 }));
 
 const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
@@ -31,6 +37,12 @@ const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
           <Layout.Content className="p-8 flex-1 flex flex-col overflow-y-auto">
             {children}
           </Layout.Content>
+          <Layout.Footer className={cn("p-4 text-center", classes.footer)}>
+            <Typography.Text className="text-xs font-medium">
+              Version {pkgJson.version}
+              {isDev() ? " (dev)" : ""}
+            </Typography.Text>
+          </Layout.Footer>
         </Layout>
       </Layout>
     </EmptyLayout>
