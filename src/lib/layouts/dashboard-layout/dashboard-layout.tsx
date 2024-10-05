@@ -5,8 +5,8 @@ import { Layout, Typography } from "antd";
 import React, { PropsWithChildren } from "react";
 import { createUseStyles } from "react-jss";
 import pkgJson from "../../../../package.json";
-import EmptyLayout from "../EmptyLayout";
-import Header from "./Header";
+import EmptyLayout from "../empty-layout";
+import Header from "./header";
 import Sidebar from "./sidebar";
 
 const useStyles = createUseStyles((theme: JSSTheme) => ({

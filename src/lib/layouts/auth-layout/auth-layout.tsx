@@ -1,7 +1,7 @@
 import { Typography } from "antd";
 import React, { PropsWithChildren } from "react";
-import { Logo } from "../DashboardLayout/sidebar";
-import EmptyLayout from "../EmptyLayout";
+import { Logo } from "../dashboard-layout/sidebar";
+import EmptyLayout from "../empty-layout";
 
 const AuthLayout: React.FC<PropsWithChildren> = ({ children }) => {
   return (

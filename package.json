@@ -8,6 +8,7 @@
     "prod": "vite --mode production",
     "build:prod": "tsc && vite build",
     "build:dev": "tsc && vite build --mode development",
+    "build": "CI=false sh vercel.sh",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "watch:types": "tsc -w"
