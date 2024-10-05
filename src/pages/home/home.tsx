@@ -1,12 +1,15 @@
 import PageHeading from "@/lib/components/page-heading/page-heading";
+import { useLang } from "@/lib/contexts/root.context";
 import React from "react";
 
 interface Props {}
 
 const Home: React.FC<Props> = () => {
+  const { t } = useLang();
+
   return (
     <div>
-      <PageHeading>Home</PageHeading>
+      <PageHeading>{t("sidebar:home")}</PageHeading>
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit,
       vulputate eu pharetra nec, mattis ac neque. Duis vulputate commodo lectus,
       ac blandit elit tincidunt id. Sed rhoncus, tortor sed eleifend tristique,

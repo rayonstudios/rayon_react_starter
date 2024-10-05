@@ -21,6 +21,11 @@ export const profileSlice = createSlice({
   name,
   initialState,
   reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(fetch.fulfilled, (state, action) => {
+      state.data = action.payload;
+    });
+  },
 });
 
 //action creators

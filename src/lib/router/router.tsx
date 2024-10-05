@@ -5,12 +5,15 @@ import DashboardLayout from "@/lib/layouts/DashboardLayout";
 import EmptyLayout from "@/lib/layouts/EmptyLayout";
 import { useAppDispatch } from "@/lib/redux/store";
 import { useAuth } from "@/modules/auth/hooks/auth.hooks";
+import { useRole } from "@/modules/auth/hooks/role.hooks";
 import { authActions } from "@/modules/auth/slices/auth.slice";
+import { profileActions } from "@/modules/auth/slices/profile.slice";
 import _ from "lodash";
 import React, {
   PropsWithChildren,
   ReactNode,
   useEffect,
+  useLayoutEffect,
   useState,
 } from "react";
 import {
@@ -57,11 +60,13 @@ const routeRenderer = (
           path={routePath}
           element={
             <AuthWrapper type={route.authType || parentConfig?.authType}>
-              <LayoutWrapper
-                type={route.layoutType || parentConfig?.layoutType}
-              >
-                {route.component}
-              </LayoutWrapper>
+              <RoleCheckWrapper allowedRoles={route.allowedRoles}>
+                <LayoutWrapper
+                  type={route.layoutType || parentConfig?.layoutType}
+                >
+                  {route.component}
+                </LayoutWrapper>
+              </RoleCheckWrapper>
             </AuthWrapper>
           }
         />
@@ -117,15 +122,20 @@ const AuthWrapper: React.FC<
   const navigate = useNavigate();
   const [isRendered, setIsRendered] = useState(false);
   const { status: authStatus } = useAuth();
+  const redirect = new URLSearchParams(location.search).get("redirect");
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (authStatus === "processing") {
       setIsRendered(false);
     } else {
       switch (type) {
         case "private":
           if (authStatus === "unauthenticated") {
-            navigate("/login", { state: { from: location } });
+            navigate(
+              `/login?redirect=${encodeURIComponent(
+                location.pathname + location.search
+              )}`
+            );
             setIsRendered(false);
           } else {
             setIsRendered(true);
@@ -133,8 +143,8 @@ const AuthWrapper: React.FC<
           break;
         case "public":
           if (authStatus === "authenticated") {
-            navigate("/", { state: { from: location } });
-            setIsRendered(false); // Return null or a loading indicator
+            navigate(redirect || "/");
+            setIsRendered(false);
           } else {
             setIsRendered(true);
           }
@@ -144,7 +154,36 @@ const AuthWrapper: React.FC<
           setIsRendered(true);
       }
     }
-  }, [type, authStatus]);
+  }, [type, authStatus, redirect]);
+
+  return isRendered ? children : <PageSpinner />;
+};
+
+const RoleCheckWrapper: React.FC<
+  PropsWithChildren & { allowedRoles: RouterConfig["allowedRoles"] }
+> = ({ children, allowedRoles }) => {
+  const [isRendered, setIsRendered] = useState(false);
+  const role = useRole();
+  const dispatch = useAppDispatch();
+  const { status: authStatus } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (authStatus === "authenticated") {
+      dispatch(profileActions.fetch());
+    }
+  }, [authStatus]);
+
+  useLayoutEffect(() => {
+    if (authStatus === "authenticated" && !role) {
+      setIsRendered(false);
+    } else if (Array.isArray(allowedRoles) && !allowedRoles.includes(role!)) {
+      navigate("/not-found");
+      setIsRendered(false);
+    } else {
+      setIsRendered(true);
+    }
+  }, [allowedRoles, role, authStatus]);
 
   return isRendered ? children : <PageSpinner />;
 };

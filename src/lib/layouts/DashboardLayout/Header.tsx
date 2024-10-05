@@ -3,7 +3,7 @@ import { useLang, useThemeMode } from "@/lib/contexts/root.context";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
 import { useAuth } from "@/modules/auth/hooks/auth.hooks";
 import { authActions } from "@/modules/auth/slices/auth.slice";
-import { DownOutlined, MenuOutlined, UserOutlined } from "@ant-design/icons";
+import { DownOutlined, MenuOutlined } from "@ant-design/icons";
 import { useResponsive } from "ahooks";
 import {
   Avatar,
@@ -30,6 +30,7 @@ function Header() {
   const collapsed = useAppSelector((state) => state.auth.sidebarCollapsed);
   const { logout, logoutLoading } = useAuth();
   const { t } = useTranslation();
+  const profile = useAppSelector((state) => state.profile.data);
   const isDarkTheme = themeMode === "dark";
 
   const toggleCollapsed = useCallback(() => {
@@ -40,7 +41,7 @@ function Header() {
     AlertPopup({
       title: t("logout:title"),
       message: t("logout:message"),
-      onOk: () => logout().unwrap(),
+      onOk: () => logout().unwrap().catch(console.error),
     });
   }, []);
 
@@ -106,30 +107,32 @@ function Header() {
             </Tooltip>
           </a>
         </Dropdown>
-        <Dropdown
-          menu={{
-            items: [
-              {
-                key: "settings",
-                label: "Settings",
-                onClick: onSettingsClicked,
-              },
-              {
-                key: "logout",
-                label: "Logout",
-                disabled: logoutLoading,
-                onClick: onLogout,
-              },
-            ],
-          }}
-          trigger={["click"]}
-        >
-          <Space align="center" className="cursor-pointer">
-            <Avatar icon={<UserOutlined />} />
-            <Typography.Text>John Doe</Typography.Text>
-            <DownOutlined />
-          </Space>
-        </Dropdown>
+        {profile && (
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  key: "settings",
+                  label: "Settings",
+                  onClick: onSettingsClicked,
+                },
+                {
+                  key: "logout",
+                  label: "Logout",
+                  disabled: logoutLoading,
+                  onClick: onLogout,
+                },
+              ],
+            }}
+            trigger={["click"]}
+          >
+            <Space align="center" className="cursor-pointer">
+              <Avatar src={profile.picture} />
+              <Typography.Text>{profile.name}</Typography.Text>
+              <DownOutlined />
+            </Space>
+          </Dropdown>
+        )}
       </Space>
     </AntdHeader>
   );

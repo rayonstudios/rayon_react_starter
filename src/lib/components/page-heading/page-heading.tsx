@@ -11,7 +11,7 @@ const PageHeading: React.FC<Props & TitleProps> = (props) => {
       level={1}
       {...props}
       className={cn(
-        "!text-2xl !text-text !font-semibold mt-0 !mb-6",
+        "!text-2xl !font-semibold mt-0 !mb-6",
         props.className || ""
       )}
     />

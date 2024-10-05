@@ -24,6 +24,7 @@ const twColors: any = twConfig.theme?.extend?.colors;
 
 const primaryColor = twColors.primary;
 const langKey = "lang";
+const themeKey = "theme";
 
 export enum ThemeMode {
   Light = "light",
@@ -62,13 +63,14 @@ const translations = {
 };
 
 const fallbackLng = Object.values(Lang)[0];
+const initialLang = (localStorage.getItem(langKey) || fallbackLng) as Lang;
 
 i18n.use(initReactI18next).init({
   resources: Object.keys(translations).reduce((acc, langId) => {
     acc[langId] = translations[langId as keyof typeof translations].translation;
     return acc;
   }, {} as GenericObject),
-  lng: localStorage.getItem(langKey) || fallbackLng,
+  lng: initialLang,
   fallbackLng,
   interpolation: {
     escapeValue: false,
@@ -141,18 +143,24 @@ const JSSThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   );
 };
 
+export const stringSerializer = (val: string) => val;
+
 const RootContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [css, setCss] = useState<string>();
   const ipRef = useRef<HTMLInputElement>(null);
   const [_themeMode = ThemeMode.Light, _setThemeMode] =
-    useLocalStorageState<ThemeMode>("theme", {
+    useLocalStorageState<ThemeMode>(themeKey, {
       defaultValue: ThemeMode.Light,
+      serializer: stringSerializer,
+      deserializer: stringSerializer as any,
     });
   const [themeMode, setThemeMode] = useState<ThemeType>(
     getAppTheme(_themeMode)
   );
-  const [lang = fallbackLng, setLang] = useLocalStorageState<Lang>(langKey, {
-    defaultValue: fallbackLng,
+  const [lang = initialLang, setLang] = useLocalStorageState<Lang>(langKey, {
+    defaultValue: initialLang,
+    serializer: stringSerializer,
+    deserializer: stringSerializer as any,
   });
   const [modal, contextHolder] = Modal.useModal();
 
@@ -223,6 +231,7 @@ const RootContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <RootContext.Provider
       value={{
+        ...initialValues,
         setCssFromOutside,
         setPopoverWidth,
         openFile,
@@ -237,8 +246,6 @@ const RootContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
           i18n.changeLanguage(lang);
           setLang(lang);
         },
-        translations: initialValues.translations,
-        t: initialValues.t,
         modalInstance: modal,
       }}
     >
@@ -252,7 +259,6 @@ const RootContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
               : theme.defaultAlgorithm,
           token: {
             colorPrimary: primaryColor,
-            colorBgLayout: themeMode === ThemeMode.Dark ? undefined : "#fff",
             colorTextBase:
               themeMode === ThemeMode.Dark ? undefined : twColors.text,
           },

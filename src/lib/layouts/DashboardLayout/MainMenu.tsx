@@ -1,6 +1,7 @@
 import { store, useAppSelector } from "@/lib/redux/store";
 import { getRoutePath } from "@/lib/router/router";
 import { RouterConfig, useRouterConfig } from "@/lib/router/router-config";
+import { useRole } from "@/modules/auth/hooks/role.hooks";
 import { authActions } from "@/modules/auth/slices/auth.slice";
 import { Menu } from "antd";
 import { useCallback } from "react";
@@ -19,11 +20,17 @@ function getParentKeys(key: string, arr: string[] = []) {
 export default function MainMenu({ closeOnNavigate = false, ...props }) {
   const routerConfig = useRouterConfig();
   const cr = useAppSelector((state) => state.auth.computedRoutes);
+  const role = useRole();
 
   const menuRenderer = useCallback(
     (routes: RouterConfig[], prefix = "", basePath = "") => {
       return routes.map((route, i) => {
         if (!route.menuItem) return null;
+        if (
+          Array.isArray(route.allowedRoles) &&
+          !route.allowedRoles.includes(role!)
+        )
+          return null;
 
         const path = getRoutePath(basePath, route.route?.path || "");
         const Title = route.menuItem.title;
@@ -76,7 +83,6 @@ export default function MainMenu({ closeOnNavigate = false, ...props }) {
   const pathname = useLocation().pathname;
   const selectedKey =
     cr?.find((r) => matchPath(pathname, r.route?.path || ""))?.key || "";
-  console.log("selectedKey: ", selectedKey);
 
   return (
     <Menu

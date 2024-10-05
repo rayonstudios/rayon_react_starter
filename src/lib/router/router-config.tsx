@@ -1,13 +1,16 @@
+import { Role } from "@/modules/auth/types/profile.type";
+import NotFound from "@/pages/404/404";
+import Login from "@/pages/auth/login";
+import Home from "@/pages/home/home";
 import { DashboardOutlined } from "@ant-design/icons";
 import { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import Login from "../../pages/auth/login";
-import Home from "../../pages/home/home";
+import { useAppSelector } from "../redux/store";
 
 export type RouterConfig = {
   layoutType?: "empty" | "auth" | "dashboard" | "none";
   authType?: "public" | "private" | "none";
-  allowedRoles?: string[];
+  allowedRoles?: Role[];
   component: ReactNode;
   menuItem?: {
     title: ReactNode;
@@ -23,6 +26,7 @@ export type RouterConfig = {
 
 export const useRouterConfig = (): RouterConfig[] => {
   const { t } = useTranslation();
+  const authStatus = useAppSelector((state) => state.auth.status);
 
   return [
     {
@@ -90,11 +94,32 @@ export const useRouterConfig = (): RouterConfig[] => {
       },
     },
     {
+      layoutType: "dashboard",
+      authType: "private",
+      component: <Home />,
+      allowedRoles: [Role.ADMIN],
+      menuItem: {
+        title: "Admin Only Page",
+        icon: <DashboardOutlined />,
+      },
+      route: {
+        path: "/admin-only",
+      },
+    },
+    {
       layoutType: "auth",
       authType: "public",
       component: <Login />,
       route: {
         path: "/login",
+      },
+    },
+    {
+      layoutType: authStatus === "authenticated" ? "dashboard" : "empty",
+      authType: "none",
+      component: <NotFound />,
+      route: {
+        path: "*",
       },
     },
   ];

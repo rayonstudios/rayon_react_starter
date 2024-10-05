@@ -1,5 +1,6 @@
 import { Typography } from "antd";
 import React, { PropsWithChildren } from "react";
+import { Logo } from "../DashboardLayout/sidebar";
 import EmptyLayout from "../EmptyLayout";
 
 const AuthLayout: React.FC<PropsWithChildren> = ({ children }) => {
@@ -7,13 +8,11 @@ const AuthLayout: React.FC<PropsWithChildren> = ({ children }) => {
     <EmptyLayout className="grid place-items-center">
       <div className="w-[500px] p-8 bg-gray-50 border-gray-200 border-solid rounded-lg space-y-8">
         <div className="m-auto w-min">
-          <img
-            alt="site logo"
-            src="/logo.svg"
-            className="w-[160px] self-center"
-          />
-          <Typography.Text className="text-sm block text-right mt-[2px] text-text">
-            Admin Panel
+          <div className="self-center">
+            <Logo className="[&_img]:w-[148px]" />
+          </div>
+          <Typography.Text className="text-sm block text-right relative -mt-[3px] -left-[8px] text-primary">
+            Studios
           </Typography.Text>
         </div>
         {children}

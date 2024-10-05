@@ -1,21 +1,20 @@
+import { stringSerializer } from "@/lib/contexts/root.context";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
 import { ThunkStatus } from "@/lib/types/misc";
 import { authActions } from "@/modules/auth/slices/auth.slice";
 import { useLocalStorageState } from "ahooks";
 import { useCallback, useEffect } from "react";
 
-const serializer = (val: string) => val;
-
 export const useAuth = () => {
   const [accessToken] = useLocalStorageState<string>("accessToken", {
     listenStorageChange: true,
-    serializer,
-    deserializer: serializer,
+    serializer: stringSerializer,
+    deserializer: stringSerializer,
   });
   const [refreshToken] = useLocalStorageState<string>("refreshToken", {
     listenStorageChange: true,
-    serializer,
-    deserializer: serializer,
+    serializer: stringSerializer,
+    deserializer: stringSerializer,
   });
   const { status, loginLoading, logoutLoading } = useAppSelector((state) => ({
     status: state.auth.status,

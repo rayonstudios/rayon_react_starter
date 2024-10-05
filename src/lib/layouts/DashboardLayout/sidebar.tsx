@@ -1,4 +1,4 @@
-import { useThemeMode } from "@/lib/contexts/root.context";
+import { useLang, useThemeMode } from "@/lib/contexts/root.context";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
 import { JSSTheme } from "@/lib/types/misc";
 import { cn } from "@/lib/utils/styles.utils";
@@ -24,40 +24,34 @@ const useStyles = createUseStyles((theme: JSSTheme) => ({
       backgroundColor: `${theme.colorPrimaryBg} !important`,
     },
   },
-  logo: {
-    "& img": {
-      height: 32,
-      aspectRatio: "1/1",
-    },
-  },
 }));
 
 const { Sider } = Layout;
 
-export const Logo: React.FC<{ collapsed: boolean; showLogoText?: boolean }> = ({
-  collapsed,
-  showLogoText = false,
-}) => {
-  const classes = useStyles();
+export const Logo: React.FC<{
+  collapsed?: boolean;
+  showLogoText?: boolean;
+  className?: string;
+}> = ({ collapsed, showLogoText = false, className }) => {
   const { themeMode } = useThemeMode();
 
   return (
     <Link
       to="/"
-      className={cn(classes.logo, "flex items-center justify-center space-x-2")}
+      className={cn("flex items-center justify-center space-x-2", className)}
     >
       {collapsed ? (
         <img
           alt="site-logo"
           src={
             themeMode === "light"
-              ? "/logo-icon-dark.png"
-              : "/logo-icon-light.png"
+              ? "/logo-icon-dark.svg"
+              : "/logo-icon-light.svg"
           }
-          className="h-[60px]"
+          className="!h-[20px]"
         />
       ) : (
-        <img alt="site-logo" src="/logo.svg" width={120} />
+        <img alt="site-logo" src="/logo.svg" className="w-[132px]" />
       )}
       {!collapsed && showLogoText && (
         <Typography.Text>Logo Text</Typography.Text>
@@ -72,6 +66,7 @@ const Sidebar: React.FC = () => {
   const dispatch = useAppDispatch();
   const collapsed = useAppSelector((state) => state.auth.sidebarCollapsed);
   const { themeMode } = useThemeMode();
+  const { lang, translations } = useLang();
 
   const toggleCollapsed = useCallback(() => {
     dispatch(authActions.toggleSidebarCollapsed());
@@ -95,7 +90,7 @@ const Sidebar: React.FC = () => {
         </Sider>
       ) : (
         <Drawer
-          placement={"left"}
+          placement={translations[lang].direction === "rtl" ? "right" : "left"}
           onClose={toggleCollapsed}
           open={!collapsed}
           title={<Logo collapsed={collapsed} />}
