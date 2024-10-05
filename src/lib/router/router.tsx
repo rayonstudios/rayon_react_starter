@@ -1,8 +1,8 @@
 import PageSpinner from "@/lib/components/spinner/page-spinner";
 import RootContextProvider from "@/lib/contexts/root.context";
-import AuthLayout from "@/lib/layouts/AuthLayout";
-import DashboardLayout from "@/lib/layouts/DashboardLayout";
-import EmptyLayout from "@/lib/layouts/EmptyLayout";
+import AuthLayout from "@/lib/layouts/auth-layout/auth-layout";
+import DashboardLayout from "@/lib/layouts/dashboard-layout/dashboard-layout";
+import EmptyLayout from "@/lib/layouts/empty-layout";
 import { useAppDispatch } from "@/lib/redux/store";
 import { useAuth } from "@/modules/auth/hooks/auth.hooks";
 import { useRole } from "@/modules/auth/hooks/role.hooks";

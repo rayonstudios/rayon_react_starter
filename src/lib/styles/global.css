@@ -20,3 +20,7 @@ body {
 .ant-menu-title-content a {
   color: inherit;
 }
+
+.ant-layout-sider-children .ant-menu.ant-menu-inline-collapsed {
+  width: 80px !important;
+}

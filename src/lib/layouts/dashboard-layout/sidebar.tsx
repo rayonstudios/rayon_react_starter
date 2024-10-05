@@ -8,7 +8,7 @@ import { Drawer, Layout, Typography } from "antd";
 import React, { useCallback } from "react";
 import { createUseStyles } from "react-jss";
 import { Link } from "react-router-dom";
-import MainMenu from "./MainMenu";
+import MainMenu from "./main-menu";
 const { Header: AntdHeader } = Layout;
 
 const useStyles = createUseStyles((theme: JSSTheme) => ({
