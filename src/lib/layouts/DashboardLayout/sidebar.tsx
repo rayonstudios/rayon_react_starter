@@ -1,14 +1,14 @@
-import React, { useCallback } from "react";
-import { Layout, Drawer, Typography } from "antd";
-import MainMenu from "./MainMenu";
-import { Link } from "react-router-dom";
-import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { authActions } from "../../../modules/auth/slices/auth.slice";
+import { useThemeMode } from "@/lib/contexts/root.context";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
+import { JSSTheme } from "@/lib/types/misc";
+import { cn } from "@/lib/utils/styles.utils";
+import { authActions } from "@/modules/auth/slices/auth.slice";
 import { useResponsive } from "ahooks";
+import { Drawer, Layout, Typography } from "antd";
+import React, { useCallback } from "react";
 import { createUseStyles } from "react-jss";
-import { useThemeMode } from "../../contexts/root.context";
-import { JSSTheme } from "../../types/common";
-import { cn } from "../../utils/styles.utils";
+import { Link } from "react-router-dom";
+import MainMenu from "./MainMenu";
 const { Header: AntdHeader } = Layout;
 
 const useStyles = createUseStyles((theme: JSSTheme) => ({
@@ -39,15 +39,28 @@ export const Logo: React.FC<{ collapsed: boolean; showLogoText?: boolean }> = ({
   showLogoText = false,
 }) => {
   const classes = useStyles();
+  const { themeMode } = useThemeMode();
 
   return (
     <Link
       to="/"
       className={cn(classes.logo, "flex items-center justify-center space-x-2")}
     >
-      <img alt="site-logo" src="/vite.svg" />
+      {collapsed ? (
+        <img
+          alt="site-logo"
+          src={
+            themeMode === "light"
+              ? "/logo-icon-dark.png"
+              : "/logo-icon-light.png"
+          }
+          className="h-[60px]"
+        />
+      ) : (
+        <img alt="site-logo" src="/logo.svg" width={120} />
+      )}
       {!collapsed && showLogoText && (
-        <Typography.Text>LogoText</Typography.Text>
+        <Typography.Text>Logo Text</Typography.Text>
       )}
     </Link>
   );
@@ -76,7 +89,7 @@ const Sidebar: React.FC = () => {
           className={classes.sider}
         >
           <AntdHeader>
-            <Logo collapsed={collapsed} showLogoText />
+            <Logo collapsed={collapsed} />
           </AntdHeader>
           <MainMenu />
         </Sider>
@@ -85,7 +98,7 @@ const Sidebar: React.FC = () => {
           placement={"left"}
           onClose={toggleCollapsed}
           open={!collapsed}
-          title={<Logo collapsed={collapsed} showLogoText />}
+          title={<Logo collapsed={collapsed} />}
         >
           <MainMenu />
         </Drawer>

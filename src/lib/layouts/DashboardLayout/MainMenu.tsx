@@ -1,10 +1,10 @@
+import { store, useAppSelector } from "@/lib/redux/store";
+import { getRoutePath } from "@/lib/router/router";
+import { RouterConfig, useRouterConfig } from "@/lib/router/router-config";
+import { authActions } from "@/modules/auth/slices/auth.slice";
 import { Menu } from "antd";
 import { useCallback } from "react";
 import { Link, matchPath, useLocation } from "react-router-dom";
-import { authActions } from "../../../modules/auth/slices/auth.slice";
-import { store, useAppSelector } from "../../redux/store";
-import { getRoutePath } from "../../router/router";
-import { RouterConfig, useRouterConfig } from "../../router/router-config";
 const { SubMenu } = Menu;
 
 function getParentKeys(key: string, arr: string[] = []) {
@@ -29,7 +29,7 @@ export default function MainMenu({ closeOnNavigate = false, ...props }) {
         const Title = route.menuItem.title;
         const Icon = route.menuItem.icon;
 
-        if (route.subRoutes) {
+        if (route.subRoutes?.filter((r) => r.menuItem).length) {
           return (
             <SubMenu
               key={prefix + i}
@@ -76,6 +76,7 @@ export default function MainMenu({ closeOnNavigate = false, ...props }) {
   const pathname = useLocation().pathname;
   const selectedKey =
     cr?.find((r) => matchPath(pathname, r.route?.path || ""))?.key || "";
+  console.log("selectedKey: ", selectedKey);
 
   return (
     <Menu

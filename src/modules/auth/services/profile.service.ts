@@ -1,18 +1,18 @@
-import { User } from "@/lib/types/user";
 import { fakeApi } from "@/lib/utils/misc.utils";
+import { Profile } from "../types/profile.type";
 
-async function fetchProfile() {
+async function fetch() {
   return fakeApi(() => ({
     id: "1",
     name: "John Doe",
     email: "john.doe@example.com",
     role: "admin",
     picture: "https://via.placeholder.com/150",
-  })) as Promise<User>;
+  })) as Promise<Profile>;
 }
 
-const userService = {
-  fetchProfile,
+const profileService = {
+  fetch,
 };
 
-export default userService;
+export default profileService;

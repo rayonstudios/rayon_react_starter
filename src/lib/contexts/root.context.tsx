@@ -1,3 +1,5 @@
+import enUS from "@/lib/translations/en-US.json";
+import urPK from "@/lib/translations/ur-PK.json";
 import { useLocalStorageState, useUpdateEffect } from "ahooks";
 import { ConfigProvider, Modal, theme } from "antd";
 import { HookAPI } from "antd/es/modal/useModal";
@@ -15,11 +17,12 @@ import {
 } from "react";
 import { initReactI18next } from "react-i18next";
 import { ThemeProvider } from "react-jss";
-import enUS from "../../translations/en-US.json";
-import urPK from "../../translations/ur-PK.json";
-import { GenericObject } from "../types/common";
+import twConfig from "../../../tailwind.config.js";
+import { GenericObject } from "../types/misc.js";
 
-const primaryColor = "#4AA081";
+const twColors: any = twConfig.theme?.extend?.colors;
+
+const primaryColor = twColors.primary;
 const langKey = "lang";
 
 export enum ThemeMode {
@@ -197,6 +200,8 @@ const RootContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
         const files = [];
         for (const file of e.target.files) files.push(file);
         typeof onChange === "function" && files.length && onChange(files);
+        //@ts-ignore
+        e.target.value = "";
       };
     }
     ip.click();
@@ -223,7 +228,6 @@ const RootContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
         openFile,
         themeMode,
         toggleThemeMode: (themeType) => {
-          console.log({ themeType });
           _setThemeMode(themeType as ThemeMode);
         },
         _themeMode,
@@ -248,7 +252,9 @@ const RootContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
               : theme.defaultAlgorithm,
           token: {
             colorPrimary: primaryColor,
-            borderRadius: 8,
+            colorBgLayout: themeMode === ThemeMode.Dark ? undefined : "#fff",
+            colorTextBase:
+              themeMode === ThemeMode.Dark ? undefined : twColors.text,
           },
         }}
       >

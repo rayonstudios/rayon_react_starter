@@ -1,14 +1,14 @@
 import {
-  isRejectedWithValue,
-  isRejected,
-  isPending,
-  createStore,
-  StoreEnhancer,
-  isFulfilled,
   Action,
+  createStore,
+  isFulfilled,
+  isPending,
+  isRejected,
+  isRejectedWithValue,
+  StoreEnhancer,
 } from "@reduxjs/toolkit";
 import { Reducer } from "react";
-import { ThunkStatus } from "../../types/common";
+import { ThunkStatus } from "../../types/misc";
 
 //@ts-ignore
 export const statusHandlerEnahncer: StoreEnhancer<{}, {}> =

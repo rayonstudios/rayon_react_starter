@@ -1,4 +1,4 @@
-import { Typography } from "antd";
+import PageHeading from "@/lib/components/page-heading/page-heading";
 import React from "react";
 
 interface Props {}
@@ -6,7 +6,7 @@ interface Props {}
 const Home: React.FC<Props> = () => {
   return (
     <div>
-      <Typography.Title>Home</Typography.Title>
+      <PageHeading>Home</PageHeading>
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit,
       vulputate eu pharetra nec, mattis ac neque. Duis vulputate commodo lectus,
       ac blandit elit tincidunt id. Sed rhoncus, tortor sed eleifend tristique,

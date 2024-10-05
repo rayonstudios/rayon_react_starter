@@ -1,4 +1,8 @@
-import AlertPopup from "@/common/components/alert-popup/alert-popup";
+import AlertPopup from "@/lib/components/alert-popup/alert-popup";
+import { useLang, useThemeMode } from "@/lib/contexts/root.context";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
+import { useAuth } from "@/modules/auth/hooks/auth.hooks";
+import { authActions } from "@/modules/auth/slices/auth.slice";
 import { DownOutlined, MenuOutlined, UserOutlined } from "@ant-design/icons";
 import { useResponsive } from "ahooks";
 import {
@@ -13,10 +17,6 @@ import {
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { authActions } from "../../../modules/auth/slices/auth.slice";
-import { useLang, useThemeMode } from "../../contexts/root.context";
-import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { ThunkStatus } from "../../types/common";
 import { Logo } from "./sidebar";
 
 const { Header: AntdHeader } = Layout;
@@ -28,6 +28,7 @@ function Header() {
   const { translations, lang, setLang } = useLang();
   const { md } = useResponsive();
   const collapsed = useAppSelector((state) => state.auth.sidebarCollapsed);
+  const { logout, logoutLoading } = useAuth();
   const { t } = useTranslation();
   const isDarkTheme = themeMode === "dark";
 
@@ -35,15 +36,11 @@ function Header() {
     dispatch(authActions.toggleSidebarCollapsed());
   }, []);
 
-  const logoutLoading = useAppSelector(
-    (state) => state.auth.logoutStatus === ThunkStatus.LOADING
-  );
-
   const onLogout = useCallback(() => {
     AlertPopup({
       title: t("logout:title"),
       message: t("logout:message"),
-      onOk: () => dispatch(authActions.logout()).unwrap(),
+      onOk: () => logout().unwrap(),
     });
   }, []);
 
@@ -127,7 +124,7 @@ function Header() {
           }}
           trigger={["click"]}
         >
-          <Space align="center">
+          <Space align="center" className="cursor-pointer">
             <Avatar icon={<UserOutlined />} />
             <Typography.Text>John Doe</Typography.Text>
             <DownOutlined />

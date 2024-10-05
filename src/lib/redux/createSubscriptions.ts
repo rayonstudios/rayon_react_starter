@@ -1,6 +1,6 @@
 import { Slice, createAsyncThunk } from "@reduxjs/toolkit";
+import { GenericObject } from "../types/misc";
 import { AppDispatch, RootState, store } from "./store";
-import { GenericObject } from "../types/common";
 
 const createSubscriptons = (
   slice: Slice,

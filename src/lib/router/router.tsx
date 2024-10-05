@@ -1,3 +1,11 @@
+import PageSpinner from "@/lib/components/spinner/page-spinner";
+import RootContextProvider from "@/lib/contexts/root.context";
+import AuthLayout from "@/lib/layouts/AuthLayout";
+import DashboardLayout from "@/lib/layouts/DashboardLayout";
+import EmptyLayout from "@/lib/layouts/EmptyLayout";
+import { useAppDispatch } from "@/lib/redux/store";
+import { useAuth } from "@/modules/auth/hooks/auth.hooks";
+import { authActions } from "@/modules/auth/slices/auth.slice";
 import _ from "lodash";
 import React, {
   PropsWithChildren,
@@ -12,13 +20,6 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
-import PageSpinner from "../../common/components/spinner/page-spinner";
-import { authActions } from "../../modules/auth/slices/auth.slice";
-import RootContextProvider from "../contexts/root.context";
-import AuthLayout from "../layouts/AuthLayout";
-import DashboardLayout from "../layouts/DashboardLayout";
-import EmptyLayout from "../layouts/EmptyLayout";
-import { useAppDispatch, useAppSelector } from "../redux/store";
 import { RouterConfig, useRouterConfig } from "./router-config";
 
 export function getRoutePath(basePath: string, currPath: string) {
@@ -115,15 +116,15 @@ const AuthWrapper: React.FC<
   const location = useLocation();
   const navigate = useNavigate();
   const [isRendered, setIsRendered] = useState(false);
-  const isLoggedIn = useAppSelector((state) => state.auth.isLoggedIn);
+  const { status: authStatus } = useAuth();
 
   useEffect(() => {
-    if (isLoggedIn === undefined) {
+    if (authStatus === "processing") {
       setIsRendered(false);
     } else {
       switch (type) {
         case "private":
-          if (!isLoggedIn) {
+          if (authStatus === "unauthenticated") {
             navigate("/login", { state: { from: location } });
             setIsRendered(false);
           } else {
@@ -131,7 +132,7 @@ const AuthWrapper: React.FC<
           }
           break;
         case "public":
-          if (isLoggedIn) {
+          if (authStatus === "authenticated") {
             navigate("/", { state: { from: location } });
             setIsRendered(false); // Return null or a loading indicator
           } else {
@@ -143,7 +144,7 @@ const AuthWrapper: React.FC<
           setIsRendered(true);
       }
     }
-  }, [type, isLoggedIn]);
+  }, [type, authStatus]);
 
   return isRendered ? children : <PageSpinner />;
 };

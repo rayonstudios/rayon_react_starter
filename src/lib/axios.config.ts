@@ -1,4 +1,4 @@
-import AlertPopup from "@/common/components/alert-popup/alert-popup";
+import AlertPopup from "@/lib/components/alert-popup/alert-popup";
 import { getErrorMessage, globalErrorHandler } from "@/lib/utils/error.utils";
 import authService from "@/modules/auth/services/auth.service";
 import axiosApi from "axios";
@@ -8,7 +8,7 @@ export const PERMISSION_ERR_MSG =
   "You don't have permission to perform this action. Please contact your organization admin.";
 
 const axios = axiosApi.create({
-  baseURL: import.meta.env.API_BASE_URL,
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },

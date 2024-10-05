@@ -1,6 +1,6 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { RouterConfig } from "../../../lib/router/router-config";
-import { ThunkStatus } from "../../../lib/types/common";
+import { RouterConfig } from "@/lib/router/router-config";
+import { ThunkStatus } from "@/lib/types/misc";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import authService from "../services/auth.service";
 
 export const name = "auth";
@@ -9,19 +9,15 @@ export const name = "auth";
 const initialState: {
   computedRoutes?: (RouterConfig & { key: string })[];
   sidebarCollapsed: boolean;
-  isLoggedIn?: boolean;
+  status: "processing" | "authenticated" | "unauthenticated";
   loginStatus: ThunkStatus;
   logoutStatus: ThunkStatus;
-  accessToken?: string;
-  refreshToken?: string;
 } = {
   computedRoutes: undefined,
   sidebarCollapsed: false,
-  isLoggedIn: true,
+  status: "processing",
   loginStatus: ThunkStatus.IDLE,
   logoutStatus: ThunkStatus.IDLE,
-  accessToken: undefined,
-  refreshToken: undefined,
 };
 
 const login = createAsyncThunk(
@@ -33,7 +29,11 @@ const login = createAsyncThunk(
     return res;
   }
 );
-const logout = createAsyncThunk(`${name}/logout`, authService.logout);
+const logout = createAsyncThunk(`${name}/logout`, async () => {
+  await authService.logout();
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+});
 
 //slice
 export const authSlice = createSlice({
@@ -46,11 +46,16 @@ export const authSlice = createSlice({
     setComputedRoutes(state, action) {
       state.computedRoutes = action.payload;
     },
+    setStatus(state, action: PayloadAction<(typeof initialState)["status"]>) {
+      state.status = action.payload;
+    },
   },
   extraReducers: (builder) => {
-    builder.addCase(login.fulfilled, (state, action) => {
-      state.accessToken = action.payload.accessToken;
-      state.refreshToken = action.payload.refreshToken;
+    builder.addCase(login.fulfilled, (state) => {
+      state.status = "authenticated";
+    });
+    builder.addCase(logout.fulfilled, (state) => {
+      state.status = "unauthenticated";
     });
   },
 });

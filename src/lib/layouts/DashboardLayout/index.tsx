@@ -1,11 +1,10 @@
-import React, { PropsWithChildren } from "react";
-import Sidebar from "./sidebar";
 import { Layout } from "antd";
-import EmptyLayout from "../EmptyLayout";
-import PerfectScrollBar from "react-perfect-scrollbar";
+import React, { PropsWithChildren } from "react";
 import { createUseStyles } from "react-jss";
+import { JSSTheme } from "../../types/misc";
+import EmptyLayout from "../EmptyLayout";
 import Header from "./Header";
-import { JSSTheme } from "../../types/common";
+import Sidebar from "./sidebar";
 
 const useStyles = createUseStyles((theme: JSSTheme) => ({
   root: {
@@ -18,11 +17,6 @@ const useStyles = createUseStyles((theme: JSSTheme) => ({
     },
     color: theme.colorText,
   },
-  scrollContainer: {
-    "& .scrollbar-container": {
-      flex: 1,
-    },
-  },
 }));
 
 const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
@@ -34,10 +28,8 @@ const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
         <Sidebar />
         <Layout>
           <Header />
-          <Layout.Content
-            className={`${classes.scrollContainer} p-8 overflow-auto flex-1 flex flex-col`}
-          >
-            <PerfectScrollBar>{children}</PerfectScrollBar>
+          <Layout.Content className="p-8 flex-1 flex flex-col overflow-y-auto">
+            {children}
           </Layout.Content>
         </Layout>
       </Layout>

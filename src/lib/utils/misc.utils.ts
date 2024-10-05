@@ -10,3 +10,11 @@ export const fakeApi = async (
   const res = await handler();
   return res;
 };
+
+export function isDev() {
+  return import.meta.env.VITE_ENV === "dev";
+}
+
+export function isNullish(value: any) {
+  return [null, undefined, ""].includes(value);
+}
