@@ -1,0 +1,6 @@
+README.md
+node_modules/
+.env*
+.env.*
+dist/
+.DS_Store

@@ -27,6 +27,8 @@ Rayon React Starter is an opinionated starter kit designed to scaffold React pro
 - 🌀 **Automatic Loading States**: Built-in loading state management for async thunks
 - 📂 **Feature-based Folder Structure**: Maintain clean separation of concerns
 - 🛠 **Built-in Utilities**: Handy utility functions, hooks, and components to cover common use cases
+- 🧹 **Prettier and ESLint Config**: Enforce code style and quality with Prettier and ESLint configurations
+- 🚀 **CI/CD with Firebase Hosting**: Continuous Integration and Deployment setup using Firebase Hosting and Github Actions for seamless deployment
 
 ## Getting Started
 
@@ -76,7 +78,5 @@ Pages components should be placed under the `pages` folder.
 ## Roadmap
 
 - [ ] Detailed Developer Documentation
-- [ ] Workflow files for github CI
-- [ ] Pre-configured ESLint and Prettier Setup
 - [ ] Add unit, integration and e2e tests support
 - [ ] Convert to a modular CLI based tools

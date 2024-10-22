@@ -1,0 +1,18 @@
+{
+  "targets": {
+    "applied-abbey-378009": {
+      "hosting": {
+        "prod": [
+          "rayon-react-starter"
+        ]
+      }
+    },
+    "physikomatics-be": {
+      "hosting": {
+        "dev": [
+          "rayon-react-starter-dev"
+        ]
+      }
+    }
+  }
+}
