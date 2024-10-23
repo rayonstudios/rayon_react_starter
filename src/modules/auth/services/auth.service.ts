@@ -1,8 +1,8 @@
 import { fakeApi } from "@/lib/utils/misc.utils";
 
-async function login(_: { email: string; password: string }) {
+async function login({ email }: { email: string; password: string }) {
   return fakeApi(() => ({
-    accessToken: "accessToken",
+    accessToken: email.toLowerCase(),
     refreshToken: "refreshToken",
   })) as Promise<{ accessToken: string; refreshToken: string }>;
 }
