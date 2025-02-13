@@ -2,6 +2,7 @@ import { RouterConfig } from "@/lib/router/router-config";
 import { ThunkStatus } from "@/lib/types/misc";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import authService from "../services/auth.service";
+import { ForgotPassword } from "../types/auth.type";
 
 export const name = "auth";
 
@@ -12,28 +13,51 @@ const initialState: {
   status: "processing" | "authenticated" | "unauthenticated";
   loginStatus: ThunkStatus;
   logoutStatus: ThunkStatus;
+  changePasswordStatus: ThunkStatus;
+  resetPasswordStatus: ThunkStatus;
+  forgotPasswordStatus: ThunkStatus;
 } = {
   computedRoutes: undefined,
   sidebarCollapsed: false,
   status: "processing",
   loginStatus: ThunkStatus.IDLE,
   logoutStatus: ThunkStatus.IDLE,
+  changePasswordStatus: ThunkStatus.IDLE,
+  resetPasswordStatus: ThunkStatus.IDLE,
+  forgotPasswordStatus: ThunkStatus.IDLE,
 };
 
 const login = createAsyncThunk(
   `${name}/login`,
   async (data: Parameters<typeof authService.login>[0]) => {
     const res = await authService.login(data);
-    localStorage.setItem("accessToken", res.accessToken);
-    localStorage.setItem("refreshToken", res.refreshToken);
+    localStorage.setItem("accessToken", res.data.accessToken);
+    localStorage.setItem("refreshToken", res.data.refreshToken);
     return res;
   }
 );
 const logout = createAsyncThunk(`${name}/logout`, async () => {
-  await authService.logout();
   localStorage.removeItem("accessToken");
   localStorage.removeItem("refreshToken");
 });
+const changePassword = createAsyncThunk(
+  `${name}/changePassword`,
+  async (password: string) => {
+    return await authService.changePassword(password);
+  }
+);
+const forgotPassword = createAsyncThunk(
+  `${name}/forgotPassword`,
+  async (email: string) => {
+    return await authService.forgotPassword(email);
+  }
+);
+const resetPassword = createAsyncThunk(
+  `${name}/resetPassword`,
+  async (data: ForgotPassword) => {
+    return await authService.resetPassword(data);
+  }
+);
 
 //slice
 export const authSlice = createSlice({
@@ -61,4 +85,11 @@ export const authSlice = createSlice({
 });
 
 //action creators
-export const authActions = { ...authSlice.actions, login, logout };
+export const authActions = {
+  ...authSlice.actions,
+  login,
+  logout,
+  changePassword,
+  forgotPassword,
+  resetPassword,
+};
