@@ -7,7 +7,6 @@ import { useAppDispatch } from "@/lib/redux/store";
 import { useAuth } from "@/modules/auth/hooks/auth.hooks";
 import { useRole } from "@/modules/auth/hooks/role.hooks";
 import { authActions } from "@/modules/auth/slices/auth.slice";
-import { profileActions } from "@/modules/auth/slices/profile.slice";
 import _ from "lodash";
 import React, {
   PropsWithChildren,
@@ -164,19 +163,19 @@ const RoleCheckWrapper: React.FC<
 > = ({ children, allowedRoles }) => {
   const [isRendered, setIsRendered] = useState(false);
   const role = useRole();
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const { status: authStatus } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (authStatus === "authenticated") {
-      dispatch(profileActions.fetch());
+      // dispatch(profileActions.fetch());
     }
   }, [authStatus]);
 
   useLayoutEffect(() => {
     if (authStatus === "authenticated" && !role) {
-      setIsRendered(false);
+      setIsRendered(true);
     } else if (Array.isArray(allowedRoles) && !allowedRoles.includes(role!)) {
       navigate("/not-found");
       setIsRendered(false);

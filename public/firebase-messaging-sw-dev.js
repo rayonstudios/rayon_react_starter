@@ -6,13 +6,13 @@ importScripts(
 );
 
 firebase.initializeApp({
-  apiKey: "AIzaSyCRU-zYW7O-YKcXRk1Sq5PO6zTknux8DuI",
-  authDomain: "omega-episode-437415-r5.firebaseapp.com",
-  projectId: "omega-episode-437415-r5",
-  storageBucket: "omega-episode-437415-r5.firebasestorage.app",
-  messagingSenderId: "979934890224",
-  appId: "1:979934890224:web:75122e9f216a1fed961a35",
-  measurementId: "G-D5MXKD8SVG",
+  apiKey: "fake",
+  authDomain: "fake",
+  projectId: "fake",
+  storageBucket: "fake",
+  messagingSenderId: "fake",
+  appId: "fake",
+  measurementId: "fake",
 });
 
 const messaging = firebase.messaging();

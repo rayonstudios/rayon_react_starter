@@ -9,12 +9,12 @@ export type Profile = {
   name: string;
   email: string;
   role: Role;
-  picture?: string;
+  photo?: string;
   fcm_tokens: string[];
 };
 export type ProfileUpdate =
   | (Partial<Profile> & Omit<Profile, "fcm_tokens">)
   | {
       fcm_token?: string;
-      picture?: File;
+      photo?: File;
     };
