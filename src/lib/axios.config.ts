@@ -46,7 +46,7 @@ axios.interceptors.response.use(undefined, async (error) => {
   error.message = msg;
 
   if (error.response?.status === 401) {
-    if (!["/auth/login", "/auth/refresh-token"].includes(error.config.url!)) {
+    if (!["auth/login", "auth/refresh"].includes(error.config.url!)) {
       // retry request after refreshing token
       const { accessToken, refreshToken } = await authService.refreshToken();
       localStorage.setItem("accessToken", accessToken);

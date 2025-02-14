@@ -1,6 +1,8 @@
 import { Role } from "@/modules/auth/types/profile.type";
 import NotFound from "@/pages/404/404";
+import ForgotPassword from "@/pages/auth/ForgotPassword";
 import Login from "@/pages/auth/login";
+import ResetPassword from "@/pages/auth/resetPassword";
 import Home from "@/pages/home/home";
 import { DashboardOutlined } from "@ant-design/icons";
 import { ReactNode } from "react";
@@ -112,6 +114,22 @@ export const useRouterConfig = (): RouterConfig[] => {
       component: <Login />,
       route: {
         path: "/login",
+      },
+    },
+    {
+      layoutType: "auth",
+      authType: "public",
+      component: <ForgotPassword />,
+      route: {
+        path: "/forgot-password",
+      },
+    },
+    {
+      layoutType: "auth",
+      authType: "public",
+      component: <ResetPassword />,
+      route: {
+        path: "/reset-password/:email",
       },
     },
     {
