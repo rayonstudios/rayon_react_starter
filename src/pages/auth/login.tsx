@@ -3,7 +3,9 @@ import { useAuth } from "@/modules/auth/hooks/auth.hooks";
 import { authActions } from "@/modules/auth/slices/auth.slice";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
+import { FormProps } from "antd/lib";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 type FormValues = Parameters<typeof authActions.login>[0];
 
@@ -12,7 +14,9 @@ interface Props {}
 const Login: React.FC<Props> = () => {
   const { login, loginLoading } = useAuth();
 
-  const onFinish = (values: FormValues) => {
+  const navigate = useNavigate();
+
+  const onFinish: FormProps<FormValues>["onFinish"] = (values) => {
     login(values);
   };
 
@@ -42,6 +46,13 @@ const Login: React.FC<Props> = () => {
             size="large"
           />
         </Form.Item>
+        <Button
+          type="link"
+          className="mt-[-10px]"
+          onClick={() => navigate("/forgot-password")}
+        >
+          ForgotPassword
+        </Button>
 
         <Form.Item className="float-right mb-0">
           <Button loading={loginLoading} type="primary" htmlType="submit">
