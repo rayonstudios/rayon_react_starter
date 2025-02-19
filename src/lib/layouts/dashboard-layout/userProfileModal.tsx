@@ -28,7 +28,7 @@ const UserProfile: React.FC<Props> = ({
   });
 
   const loading = useAppSelector(
-    (state) => state.profile.patchProfileStatus === ThunkStatus.LOADING
+    (state) => state.profile.patchStatus === ThunkStatus.LOADING
   );
 
   useEffect(() => {
@@ -45,9 +45,7 @@ const UserProfile: React.FC<Props> = ({
     setModalOpen(false);
   };
 
-  const onFinish: FormProps<FieldType>["onFinish"] = (values: FieldType) => {
-    console.log("values: ", values);
-  };
+  const onFinish: FormProps<FieldType>["onFinish"] = () => {};
 
   return (
     <div>

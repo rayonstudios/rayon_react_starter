@@ -175,7 +175,7 @@ const RoleCheckWrapper: React.FC<
 
   useLayoutEffect(() => {
     if (authStatus === "authenticated" && !role) {
-      setIsRendered(true);
+      setIsRendered(false);
     } else if (Array.isArray(allowedRoles) && !allowedRoles.includes(role!)) {
       navigate("/not-found");
       setIsRendered(false);

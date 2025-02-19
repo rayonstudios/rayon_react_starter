@@ -118,7 +118,7 @@ function Header() {
             </Tooltip>
           </a>
         </Dropdown>
-        {true && (
+        {profile && (
           <Dropdown
             menu={{
               items: [
@@ -139,7 +139,9 @@ function Header() {
           >
             <Space align="center" className="cursor-pointer">
               <Avatar src={profile?.photo} />
-              <Typography.Text>{profile?.name || "John Doe"}</Typography.Text>
+              <Typography.Text>
+                {profile?.first_name} {profile?.last_name}
+              </Typography.Text>
               <DownOutlined />
             </Space>
           </Dropdown>

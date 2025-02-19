@@ -1,6 +1,6 @@
 import axios from "@/lib/axios.config";
 import { messaging } from "@/lib/utils/firebase.config";
-import { isDev } from "@/lib/utils/misc.utils";
+import { isDev, objectToFormData } from "@/lib/utils/misc.utils";
 import { Profile, ProfileUpdate } from "../types/profile.type";
 
 const fetch = async () => {
@@ -8,9 +8,10 @@ const fetch = async () => {
   return res.data;
 };
 const patch = async (data: ProfileUpdate) => {
-  const res = await axios.patch<Profile>(`profile`, data, {
+  const formData = objectToFormData(data);
+  const res = await axios.patch<Profile>(`profile`, formData, {
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "multipart/form-data",
     },
   });
   return res.data;
