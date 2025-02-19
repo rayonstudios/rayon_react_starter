@@ -15,3 +15,9 @@ export const randString = (len: number = 8) =>
     )
     .replace(/[+/]/g, "")
     .substring(0, len);
+export const kebabCaseToWords = (str: string) => {
+  return str
+    .split("-")
+    .map((word) => capitalize(word))
+    .join(" ");
+};

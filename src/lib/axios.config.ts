@@ -20,6 +20,9 @@ axios.interceptors.request.use((reqConfig) => {
   if (token && !reqConfig.headers.Authorization) {
     reqConfig.headers.Authorization = `Bearer ${token}`;
   }
+
+  const isMultipart = reqConfig.data instanceof FormData;
+  if (isMultipart) reqConfig.headers["Content-Type"] = "multipart/form-data";
   return reqConfig;
 });
 
