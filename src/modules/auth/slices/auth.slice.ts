@@ -2,7 +2,6 @@ import { RouterConfig } from "@/lib/router/router-config";
 import { ThunkStatus } from "@/lib/types/misc";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import authService from "../services/auth.service";
-import { ForgotPassword } from "../types/auth.type";
 
 export const name = "auth";
 
@@ -42,21 +41,15 @@ const logout = createAsyncThunk(`${name}/logout`, async () => {
 });
 const changePassword = createAsyncThunk(
   `${name}/changePassword`,
-  async (password: string) => {
-    return await authService.changePassword(password);
-  }
+  authService.changePassword
 );
 const forgotPassword = createAsyncThunk(
   `${name}/forgotPassword`,
-  async (email: string) => {
-    return await authService.forgotPassword(email);
-  }
+  authService.forgotPassword
 );
 const resetPassword = createAsyncThunk(
   `${name}/resetPassword`,
-  async (data: ForgotPassword) => {
-    return await authService.resetPassword(data);
-  }
+  authService.resetPassword
 );
 
 //slice
