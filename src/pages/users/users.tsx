@@ -1,5 +1,4 @@
 import PageHeading from "@/lib/components/page-heading/page-heading";
-import { Button } from "antd";
 import React from "react";
 
 interface Props {}
@@ -9,13 +8,6 @@ const Users: React.FC<Props> = () => {
     <div>
       <PageHeading className="inline-block">Users</PageHeading>
       <div className="relative">
-        <Button
-          type="primary"
-          className="absolute  right-[51px] top-[-56px] "
-          //   onClick={() => setUrlState({ dialogType: "createUser" })}
-        >
-          Create Admin User
-        </Button>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta cum a
         hic, dolorum perferendis dolorem quo perspiciatis doloremque eius vel
         accusantium temporibus sint distinctio debitis eveniet explicabo
