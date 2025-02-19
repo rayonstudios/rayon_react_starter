@@ -7,7 +7,7 @@ interface Props {
 }
 
 const CustomModal: React.FC<Props & ComponentProps<typeof Modal>> = ({
-  loading,
+  loading = false,
   submitLoading,
   ...props
 }) => {

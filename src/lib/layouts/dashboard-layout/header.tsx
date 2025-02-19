@@ -3,6 +3,7 @@ import { useLang, useThemeMode } from "@/lib/contexts/root.context";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
 import { useAuth } from "@/modules/auth/hooks/auth.hooks";
 import { authActions } from "@/modules/auth/slices/auth.slice";
+import useUrlState from "@ahooksjs/use-url-state";
 import { DownOutlined, MenuOutlined } from "@ant-design/icons";
 import { useResponsive } from "ahooks";
 import {
@@ -16,14 +17,19 @@ import {
 } from "antd";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 import { Logo } from "./sidebar";
+import UserProfile from "./userProfileModal";
 
 const { Header: AntdHeader } = Layout;
 
 function Header() {
+  const [urlState, setUrlState] = useUrlState({
+    dialogType: "",
+  });
+
+  const resetDialogState = () => setUrlState({ dialogType: "" });
+
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const { themeMode, toggleThemeMode, _themeMode } = useThemeMode();
   const { translations, lang, setLang } = useLang();
   const { md } = useResponsive();
@@ -45,12 +51,17 @@ function Header() {
     });
   }, []);
 
-  const onSettingsClicked = useCallback(() => {
-    navigate("/settings");
+  const onProfileClicked = useCallback(() => {
+    setUrlState({ dialogType: "userProfile" });
   }, []);
 
   return (
     <AntdHeader className="justify-between">
+      <UserProfile
+        isModalOpen={urlState.dialogType === "userProfile"}
+        setModalOpen={resetDialogState}
+        profile={profile!}
+      />
       {md ? (
         <div />
       ) : (
@@ -70,7 +81,7 @@ function Header() {
             label: translations[lang as keyof typeof translations].title,
           }))}
           value={lang}
-          onChange={(value) => setLang(value)}
+          onChange={(value: any) => setLang(value)}
         />
         <Dropdown
           trigger={["click"]}
@@ -112,9 +123,9 @@ function Header() {
             menu={{
               items: [
                 {
-                  key: "settings",
-                  label: "Settings",
-                  onClick: onSettingsClicked,
+                  key: "profile",
+                  label: "Profile",
+                  onClick: onProfileClicked,
                 },
                 {
                   key: "logout",
@@ -127,8 +138,10 @@ function Header() {
             trigger={["click"]}
           >
             <Space align="center" className="cursor-pointer">
-              <Avatar src={profile.picture} />
-              <Typography.Text>{profile.name}</Typography.Text>
+              <Avatar src={profile?.photo} />
+              <Typography.Text>
+                {profile?.first_name} {profile?.last_name}
+              </Typography.Text>
               <DownOutlined />
             </Space>
           </Dropdown>
