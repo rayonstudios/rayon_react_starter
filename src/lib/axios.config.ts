@@ -20,6 +20,9 @@ axios.interceptors.request.use((reqConfig) => {
   if (token && !reqConfig.headers.Authorization) {
     reqConfig.headers.Authorization = `Bearer ${token}`;
   }
+
+  const isMultipart = reqConfig.data instanceof FormData;
+  if (isMultipart) reqConfig.headers["Content-Type"] = "multipart/form-data";
   return reqConfig;
 });
 
@@ -46,7 +49,7 @@ axios.interceptors.response.use(undefined, async (error) => {
   error.message = msg;
 
   if (error.response?.status === 401) {
-    if (!["/auth/login", "/auth/refresh-token"].includes(error.config.url!)) {
+    if (!["auth/login", "auth/refresh"].includes(error.config.url!)) {
       // retry request after refreshing token
       const { accessToken, refreshToken } = await authService.refreshToken();
       localStorage.setItem("accessToken", accessToken);
