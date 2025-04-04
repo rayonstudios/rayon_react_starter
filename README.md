@@ -2,7 +2,7 @@
 
 Rayon React Starter is an opinionated starter kit designed to scaffold React projects quickly with a comprehensive and well-structured environment. Built with a modern tech stack and batteries included, it helps you start building your project in no time.
 
-[Live Demo](https://rayon-gcp-starter.web.app/)
+[Live Demo](https://fe.starters.rayonstudios.com/)
 
 ## Tech Stack
 
