@@ -2,7 +2,7 @@
 
 Rayon React Starter is an opinionated starter kit designed to scaffold React projects quickly with a comprehensive and well-structured environment. Built with a modern tech stack and batteries included, it helps you start building your project in no time.
 
-[Live Demo](https://rayon-react-starter.web.app/)
+[Live Demo](https://rayon-gcp-starter.web.app/)
 
 ## Tech Stack
 
@@ -44,7 +44,7 @@ Ensure you have the following installed:
 1. Clone the repository:
     ```bash
     git clone https://github.com/rayonstudios/rayon_react_starter
-    cd rayon-react-starter
+    cd rayon-gcp-starter
     ```
 2. Install dependencies:
     ```bash

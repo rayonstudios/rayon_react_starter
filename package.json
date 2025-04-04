@@ -1,7 +1,8 @@
 {
   "name": "rayon_react_starter",
   "private": true,
-  "version": "0.0.3",
+  "version": "1.4",
+  "description": "Rayon React Starter is an opinionated starter kit designed to scaffold React projects quickly with a comprehensive and well-structured environment. Built with a modern tech stack and batteries included, it helps you start building your project in no time.",
   "type": "module",
   "scripts": {
     "dev": "vite",

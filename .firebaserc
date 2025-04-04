@@ -1,16 +1,16 @@
 {
   "targets": {
-    "applied-abbey-378009": {
+    "rayon-gcp-starter": {
       "hosting": {
         "prod": [
-          "rayon-react-starter"
+          "rayon-gcp-starter"
         ]
       }
     },
-    "physikomatics-be": {
+    "rayon-gcp-starter": {
       "hosting": {
         "dev": [
-          "rayon-react-starter-dev"
+          "rayon-gcp-starter"
         ]
       }
     }

@@ -3,6 +3,8 @@ name: Deploy to Firebase Hosting on merge (main)
   push:
     branches:
       - main
+  workflow_dispatch:
+
 jobs:
   build_and_deploy:
     permissions: write-all
@@ -30,5 +32,5 @@ jobs:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_PROD }}"
           channelId: live
-          projectId: applied-abbey-378009
+          projectId: rayon-gcp-starter
           target: prod
