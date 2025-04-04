@@ -1,4 +1,4 @@
-name: Deploy to Firebase Hosting on PR (main)
+name: Preview deploy to Firebase Hosting on PR (main)
 on:
   pull_request:
     branches:

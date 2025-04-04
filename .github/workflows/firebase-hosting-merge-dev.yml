@@ -1,4 +1,4 @@
-name: Deploy to Firebase Hosting on merge (dev)
+name: Deploy to Firebase Hosting - Dev
 "on":
   push:
     branches:
