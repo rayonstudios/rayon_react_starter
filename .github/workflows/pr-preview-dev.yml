@@ -1,27 +1,15 @@
-name: Deploy to Firebase Hosting - Dev
-"on":
-  push:
+name: Preview deploy to Firebase Hosting on PR (dev)
+on:
+  pull_request:
     branches:
       - dev
-  workflow_dispatch:
 
 jobs:
-  build_and_deploy:
+  build_and_preview:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          persist-credentials: false
-
-      - name: Reconfigure git to use HTTP authentication
-        run: >
-          git config --global url."https://github.com/".insteadOf
-          ssh://git@github.com/
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18
 
       - run: yarn install --frozen-lockfile && npm run build:dev
         env:
@@ -31,6 +19,5 @@ jobs:
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.SECRETJSON_DEV }}"
-          channelId: live
           projectId: rayon-gcp-starter
           target: dev
