@@ -12,7 +12,7 @@ async function refreshToken(refreshToken: string) {
   const { data } = await withApiResponseHandling(
     apiClient.POST("/auth/refresh", {
       headers: {
-        Authorization: `Bearer ${refreshToken}`,
+        authorization: `Bearer ${refreshToken}`,
       },
     })
   );

@@ -153,7 +153,7 @@ export default function ServerPaginatedTable<T extends AnyObject>({
     // filters
     Object.entries(restParams).forEach(([key, value]) => {
       if (!key.startsWith("filter.")) return;
-      if (!isNullish(value)) query[key.split("filter.")[1]] = value;
+      if (!isNullish(value)) query[key.split("filter.")[1]!] = value;
     });
     // sorting
     if (restParams["sort.field"] && !isNullish(restParams["sort.order"])) {
