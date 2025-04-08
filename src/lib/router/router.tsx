@@ -5,7 +5,7 @@ import DashboardLayout from "@/lib/layouts/dashboard-layout/dashboard-layout";
 import EmptyLayout from "@/lib/layouts/empty-layout";
 import { useAppDispatch } from "@/lib/redux/store";
 import { useAuth } from "@/modules/auth/hooks/auth.hooks";
-import { useRole } from "@/modules/auth/hooks/role.hooks";
+import { Role, useRole } from "@/modules/auth/hooks/role.hooks";
 import { authActions } from "@/modules/auth/slices/auth.slice";
 import { profileActions } from "@/modules/auth/slices/profile.slice";
 import _ from "lodash";
@@ -87,7 +87,7 @@ export default function Router() {
   const dispatch = useAppDispatch();
   const [ar, cr] = routeRenderer(routerConfig);
   dispatch(
-    authActions.setComputedRoutes(cr.map((r) => _.pick(r, ["route", "key"])))
+    authActions.setComputedRoutes(cr?.map((r) => _.pick(r, ["route", "key"])))
   );
 
   return (
@@ -172,12 +172,15 @@ const RoleCheckWrapper: React.FC<
     if (authStatus === "authenticated") {
       dispatch(profileActions.fetch());
     }
-  }, [authStatus]);
+  }, []);
 
   useLayoutEffect(() => {
     if (authStatus === "authenticated" && !role) {
       setIsRendered(false);
-    } else if (Array.isArray(allowedRoles) && !allowedRoles.includes(role!)) {
+    } else if (
+      Array.isArray(allowedRoles) &&
+      !allowedRoles.includes(role as Role)
+    ) {
       navigate("/not-found");
       setIsRendered(false);
     } else {

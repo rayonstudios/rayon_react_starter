@@ -1,4 +1,4 @@
-import { Role } from "@/modules/auth/types/profile.type";
+import { Role } from "@/modules/auth/hooks/role.hooks";
 import NotFound from "@/pages/404/404";
 import Login from "@/pages/auth/login";
 import Home from "@/pages/home/home";
@@ -99,11 +99,11 @@ export const useRouterConfig = (): RouterConfig[] => {
       component: <Home />,
       allowedRoles: [Role.ADMIN],
       menuItem: {
-        title: "Admin Only Page",
+        title: "Users",
         icon: <DashboardOutlined />,
       },
       route: {
-        path: "/admin-only",
+        path: "/users",
       },
     },
     {

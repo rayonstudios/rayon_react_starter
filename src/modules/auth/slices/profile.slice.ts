@@ -1,7 +1,7 @@
+import { Profile } from "@/lib/types/api";
 import { ThunkStatus } from "@/lib/types/misc";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import profileService from "../services/profile.service";
-import { Profile } from "../types/profile.type";
 
 export const name = "profile";
 

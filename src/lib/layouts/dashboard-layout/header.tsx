@@ -127,7 +127,7 @@ function Header() {
             trigger={["click"]}
           >
             <Space align="center" className="cursor-pointer">
-              <Avatar src={profile.picture} />
+              <Avatar src={profile.photo} />
               <Typography.Text>{profile.name}</Typography.Text>
               <DownOutlined />
             </Space>

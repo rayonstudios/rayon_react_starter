@@ -1,18 +1,8 @@
-import { fakeApi } from "@/lib/utils/misc.utils";
-import { Profile } from "../types/profile.type";
+import apiClient, { withApiResponseHandling } from "@/lib/openapi-fetch.config";
 
 async function fetch() {
-  const email = localStorage.getItem("accessToken");
-  return fakeApi(
-    () => ({
-      id: "1",
-      name: "John Doe",
-      email,
-      role: email?.includes("admin") ? "admin" : "user",
-      picture: "https://via.placeholder.com/150",
-    }),
-    { errorRate: 0 }
-  ) as Promise<Profile>;
+  const { data } = await withApiResponseHandling(apiClient.GET("/profile"));
+  return data;
 }
 
 const profileService = {
