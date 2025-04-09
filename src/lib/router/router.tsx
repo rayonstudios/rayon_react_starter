@@ -8,12 +8,14 @@ import { useAuth } from "@/modules/auth/hooks/auth.hooks";
 import { Role, useRole } from "@/modules/auth/hooks/role.hooks";
 import { authActions } from "@/modules/auth/slices/auth.slice";
 import { profileActions } from "@/modules/auth/slices/profile.slice";
+import NotFound from "@/pages/404/404";
 import _ from "lodash";
 import React, {
   PropsWithChildren,
   ReactNode,
   useEffect,
   useLayoutEffect,
+  useRef,
   useState,
 } from "react";
 import {
@@ -163,10 +165,12 @@ const RoleCheckWrapper: React.FC<
   PropsWithChildren & { allowedRoles: RouterConfig["allowedRoles"] }
 > = ({ children, allowedRoles }) => {
   const [isRendered, setIsRendered] = useState(false);
+  const isAllowed = useRef(true);
   const role = useRole();
   const dispatch = useAppDispatch();
   const { status: authStatus } = useAuth();
-  const navigate = useNavigate();
+
+  if (allowedRoles?.includes(Role.ADMIN)) allowedRoles.push(Role.SUPER_ADMIN);
 
   useEffect(() => {
     if (authStatus === "authenticated") {
@@ -181,12 +185,20 @@ const RoleCheckWrapper: React.FC<
       Array.isArray(allowedRoles) &&
       !allowedRoles.includes(role as Role)
     ) {
-      navigate("/not-found");
-      setIsRendered(false);
+      isAllowed.current = false;
+      setIsRendered(true);
     } else {
       setIsRendered(true);
     }
   }, [allowedRoles, role, authStatus]);
 
-  return isRendered ? children : <PageSpinner />;
+  return isRendered ? (
+    isAllowed.current ? (
+      children
+    ) : (
+      <NotFound />
+    )
+  ) : (
+    <PageSpinner />
+  );
 };

@@ -443,20 +443,17 @@ export interface components {
             bio?: string;
         };
         UserUpdate: components["schemas"]["Partial_Omit_UserMutable.email__"];
-        "Prisma.postsCreatelabelsInput": {
-            set: string[];
-        };
         "Expand_PostUnlinked-and-_author-SanitizedUser__": {
+            created_at?: string;
+            updated_at?: string;
+            id?: string;
             title: string;
-            labels?: string[] | components["schemas"]["Prisma.postsCreatelabelsInput"];
             slug: string;
             text: string;
             author_id: string;
-            id?: string;
-            created_at?: string;
-            updated_at?: string;
             /** Format: double */
             views?: number;
+            labels: string[];
             author: components["schemas"]["SanitizedUser"];
         };
         PostType: components["schemas"]["Expand_PostUnlinked-and-_author-SanitizedUser__"];
@@ -485,13 +482,13 @@ export interface components {
         };
         "Expand_Omit_PostMutable.author_id__": {
             title: string;
-            labels?: string[] | components["schemas"]["Prisma.postsCreatelabelsInput"];
+            labels: string[];
             text: string;
         };
         PostCreate: components["schemas"]["Expand_Omit_PostMutable.author_id__"];
         Expand_Partial_PostMutable__: {
             title?: string;
-            labels?: string[] | components["schemas"]["Prisma.postsCreatelabelsInput"];
+            labels?: string[];
             text?: string;
             author_id?: string;
         };

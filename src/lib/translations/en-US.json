@@ -9,7 +9,9 @@
   },
 
   "sidebar": {
-    "home": "Home"
+    "home": "Home",
+    "users": "Users",
+    "posts": "Posts"
   },
 
   "logout": {

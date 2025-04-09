@@ -163,7 +163,7 @@ export default function ServerPaginatedTable<T extends AnyObject>({
 
     axios
       .get(`${_url}?${qs.stringify(query)}`)
-      .then(({ data }) => {
+      .then(({ data: { data } }) => {
         const list = (
           Array.isArray(data)
             ? data
@@ -206,7 +206,7 @@ export default function ServerPaginatedTable<T extends AnyObject>({
           ? tableParams["sort.order"] || undefined
           : col.defaultSortOrder,
     }));
-  }, [columns]);
+  }, [columns, data]);
 
   return (
     <div className="relative">
@@ -225,6 +225,7 @@ export default function ServerPaginatedTable<T extends AnyObject>({
           />
         ) : null}
       </div>
+
       <Table
         scroll={{ x: "max-content" }}
         onChange={handleTableChange}

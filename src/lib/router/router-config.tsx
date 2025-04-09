@@ -2,7 +2,13 @@ import { Role } from "@/modules/auth/hooks/role.hooks";
 import NotFound from "@/pages/404/404";
 import Login from "@/pages/auth/login";
 import Home from "@/pages/home/home";
-import { DashboardOutlined } from "@ant-design/icons";
+import Posts from "@/pages/posts/posts";
+import Users from "@/pages/users/users";
+import {
+  BookOutlined,
+  DashboardOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../redux/store";
@@ -96,15 +102,27 @@ export const useRouterConfig = (): RouterConfig[] => {
     {
       layoutType: "dashboard",
       authType: "private",
-      component: <Home />,
-      allowedRoles: [Role.ADMIN],
+      component: <Posts />,
       menuItem: {
-        title: "Users",
-        icon: <DashboardOutlined />,
+        title: t("sidebar:posts"),
+        icon: <BookOutlined />,
+      },
+      route: {
+        path: "/posts",
+      },
+    },
+    {
+      layoutType: "dashboard",
+      authType: "private",
+      component: <Users />,
+      menuItem: {
+        title: t("sidebar:users"),
+        icon: <UserOutlined />,
       },
       route: {
         path: "/users",
       },
+      allowedRoles: [Role.SUPER_ADMIN],
     },
     {
       layoutType: "auth",
