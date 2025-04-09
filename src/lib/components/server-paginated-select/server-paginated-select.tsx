@@ -65,14 +65,13 @@ export default function ServerPaginatedSelect({
         const list = Array.isArray(data)
           ? data
           : Array.isArray(data.docs)
-          ? data.docs
-          : [];
+            ? data.docs
+            : [];
 
         if (!pageSize || list.length < pageSize) setNoMore(true);
 
         setData((prev) => uniqBy(prev.concat(list), "id") as any[]);
       })
-      //@ts-ignore
       .catch(console.error)
       .finally(() => setLoading(false));
   };
@@ -138,7 +137,7 @@ export default function ServerPaginatedSelect({
       }}
       loading={loading}
       dataSource={_data}
-      // @ts-ignore
+      // @ts-expect-error
       renderItem={renderItem}
       valueResolver={valueResolver}
       style={style}

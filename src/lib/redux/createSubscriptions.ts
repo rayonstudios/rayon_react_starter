@@ -16,7 +16,7 @@ const createSubscriptons = (
 ) => {
   const { name, reducer } = slice;
   slice.reducer = function (state, action) {
-    for (let key in subObj) {
+    for (const key in subObj) {
       if (action.type === `${name}/_register_${key}_unsubscriber_`) {
         return { ...state, [`__unsubscriber_${key}_`]: action.payload };
       }
@@ -25,7 +25,7 @@ const createSubscriptons = (
   };
 
   const res: GenericObject = {};
-  for (let key in subObj) {
+  for (const key in subObj) {
     res[`${key}Unsub`] = createAsyncThunk(
       `${name}/unsub_${key}`,
       (payload, thunksOptions) => {
@@ -41,7 +41,7 @@ const createSubscriptons = (
       `${name}/sub_${key}`,
       (payload, thunkOptions) => {
         store.dispatch(res[`${key}Unsub`]()).then(() => {
-          const unsubscriber = subObj[key](payload, thunkOptions as any);
+          const unsubscriber = subObj[key]?.(payload, thunkOptions as any);
           if (typeof unsubscriber === "function")
             store.dispatch({
               type: `${name}/_register_${key}_unsubscriber_`,

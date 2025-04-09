@@ -10,7 +10,7 @@ import {
 import { Reducer } from "react";
 import { ThunkStatus } from "../../types/misc";
 
-//@ts-ignore
+//@ts-expect-error
 export const statusHandlerEnahncer: StoreEnhancer<{}, {}> =
   (cs: typeof createStore) =>
   (
@@ -23,7 +23,7 @@ export const statusHandlerEnahncer: StoreEnhancer<{}, {}> =
 
       //get slicename and type value from action.type
       const split = action.type.split("/");
-      const sliceName = split[0];
+      const sliceName = split[0]!;
       const type = split[1];
       let status: ThunkStatus | undefined;
 

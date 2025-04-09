@@ -62,7 +62,7 @@ const translations = {
   },
 };
 
-const fallbackLng = Object.values(Lang)[0];
+const fallbackLng = Object.values(Lang)[0]!;
 const initialLang = (localStorage.getItem(langKey) || fallbackLng) as Lang;
 
 i18n.use(initReactI18next).init({
@@ -203,12 +203,12 @@ const RootContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
     if (accept) ip.setAttribute("accept", accept);
     if (multiple) ip.setAttribute("multiple", multiple.toString());
     if (onChange) {
-      //@ts-ignore
+      //@ts-expect-error
       ip.onchange = (e: { target: { files: File[] } }) => {
         const files = [];
         for (const file of e.target.files) files.push(file);
         typeof onChange === "function" && files.length && onChange(files);
-        //@ts-ignore
+        //@ts-expect-error
         e.target.value = "";
       };
     }
