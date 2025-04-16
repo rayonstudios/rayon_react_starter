@@ -18,3 +18,7 @@ export function isDev() {
 export function isNullish(value: any) {
   return [null, undefined, ""].includes(value);
 }
+
+export const fileNameFromUrl = (url: string) => {
+  return decodeURIComponent(url.split("?")?.[0]?.split("/").pop() || "");
+};

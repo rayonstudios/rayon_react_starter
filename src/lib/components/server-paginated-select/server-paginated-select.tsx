@@ -18,7 +18,7 @@ type ServerPaginatedSelectProps = React.ComponentProps<typeof Select> & {
   value?: any;
   dataSource?: (data: any[]) => any[];
   searchDebouncing?: number;
-  fetchDefaultValue: (value: any) => Promise<any>;
+  fetchDefaultValue?: (value: any) => Promise<any>;
 };
 
 export default function ServerPaginatedSelect({
@@ -72,6 +72,7 @@ export default function ServerPaginatedSelect({
 
         setData((prev) => uniqBy(prev.concat(list), "id") as any[]);
       })
+      //@ts-ignore
       .catch(console.error)
       .finally(() => setLoading(false));
   };
