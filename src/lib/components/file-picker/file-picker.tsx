@@ -64,7 +64,7 @@ const FilePicker: React.FC<Props> = ({
             </Typography.Text>
           )}
           <CloseCircleOutlined
-            className="text-red-500 mt-[5px]"
+            className="text-danger mt-[5px]"
             onClick={() =>
               onChange?.(_value.filter((_, _ix) => ix !== _ix) as any)
             }

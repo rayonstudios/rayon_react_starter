@@ -8,6 +8,7 @@ export default {
         primary: "#DAA520",
         text: "#333",
         textSecondary: "#777",
+        danger: "#EC4949",
       },
     },
   },

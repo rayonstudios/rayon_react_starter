@@ -24,8 +24,10 @@ const apiClient = createClient<paths>({
         const contentType = input.headers.get("Content-Type");
         if (contentType?.includes("application/json")) {
           data = await input.json();
+        } else if (contentType?.includes("multipart/form-data")) {
+          data = await input.formData();
         } else {
-          data = await input.text();
+          data = input.body;
         }
       }
 

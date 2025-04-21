@@ -1,11 +1,19 @@
 #!/usr/bin/env tsx
-
-import { execSync } from "child_process";
 import * as fs from "fs";
 import * as http from "http";
 import * as https from "https";
+import openapiTS, { astToString } from "openapi-typescript";
 import * as path from "path";
+import ts from "typescript";
 import { URL } from "url";
+
+const DATE = ts.factory.createTypeReferenceNode(
+  ts.factory.createIdentifier("Date")
+); // `Date`
+const FILE = ts.factory.createTypeReferenceNode(
+  ts.factory.createIdentifier("File")
+); // `Blob
+const NULL = ts.factory.createLiteralTypeNode(ts.factory.createNull()); // `null`
 
 // Get environment type from command line arguments
 const envType = process.argv[2];
@@ -87,9 +95,32 @@ async function main(): Promise<void> {
 
     // Generate TypeScript types
     console.log("Generating TypeScript types");
-    execSync(`npx openapi-typescript ${tempFilePath} -o ${outputPath}`, {
-      stdio: "inherit",
+    const openApiSchema = fs.readFileSync(tempFilePath, "utf8");
+    const ast = await openapiTS(openApiSchema, {
+      transform(schemaObject) {
+        // handle date-time type
+        if (schemaObject.format === "date-time") {
+          return {
+            schema: schemaObject.nullable
+              ? ts.factory.createUnionTypeNode([DATE, NULL])
+              : DATE,
+            questionToken: true,
+          };
+        }
+
+        // handle File type
+        if (schemaObject.format === "binary") {
+          return {
+            schema: schemaObject.nullable
+              ? ts.factory.createUnionTypeNode([FILE, NULL])
+              : FILE,
+            questionToken: true,
+          };
+        }
+      },
     });
+    const contents = astToString(ast);
+    fs.writeFileSync(outputPath, contents);
 
     // Clean up
     fs.unlinkSync(tempFilePath);

@@ -16,17 +16,23 @@ const initialState: {
 
 const fetch = createAsyncThunk(`${name}/fetch`, profileService.fetch);
 
+const update = createAsyncThunk(`${name}/update`, profileService.update);
+
 //slice
 export const profileSlice = createSlice({
   name,
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetch.fulfilled, (state, action) => {
-      state.data = action.payload;
-    });
+    builder
+      .addCase(fetch.fulfilled, (state, action) => {
+        state.data = action.payload;
+      })
+      .addCase(update.fulfilled, (state, action) => {
+        state.data = action.payload;
+      });
   },
 });
 
 //action creators
-export const profileActions = { ...profileSlice.actions, fetch };
+export const profileActions = { ...profileSlice.actions, fetch, update };

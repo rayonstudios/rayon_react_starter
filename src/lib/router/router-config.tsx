@@ -3,6 +3,7 @@ import NotFound from "@/pages/404/404";
 import Login from "@/pages/auth/login";
 import Home from "@/pages/home/home";
 import Posts from "@/pages/posts/posts";
+import Settings from "@/pages/settings/settings";
 import Users from "@/pages/users/users";
 import {
   BookOutlined,
@@ -123,6 +124,14 @@ export const useRouterConfig = (): RouterConfig[] => {
         path: "/users",
       },
       allowedRoles: [Role.SUPER_ADMIN],
+    },
+    {
+      layoutType: "dashboard",
+      authType: "private",
+      component: <Settings />,
+      route: {
+        path: "/settings",
+      },
     },
     {
       layoutType: "auth",

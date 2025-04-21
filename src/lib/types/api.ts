@@ -1,28 +1,38 @@
 import { components, operations } from "./openapi-fetch";
 
+type OperationParameters<T extends keyof operations> = NonNullable<
+  operations[T]["parameters"]
+>;
+type OperationRequestBody<T extends keyof operations> = NonNullable<
+  operations[T]["requestBody"]
+>;
+type OperationResponse<T extends keyof operations> = NonNullable<
+  operations[T]["responses"]
+>;
+
 export type ApiSchemas = components["schemas"];
 
 export type ApiQueryParams<T extends keyof operations> = NonNullable<
-  operations[T]["parameters"]["query" extends keyof operations[T]["parameters"]
+  OperationParameters<T>["query" extends keyof OperationParameters<T>
     ? "query"
     : never]
 >;
 
 export type ApiBody<T extends keyof operations> = NonNullable<
-  operations[T]["requestBody"] extends { content: { "application/json": any } }
-    ? operations[T]["requestBody"]["content"]["application/json"]
-    : operations[T]["requestBody"] extends {
+  OperationRequestBody<T> extends { content: { "application/json": any } }
+    ? OperationRequestBody<T>["content"]["application/json"]
+    : OperationRequestBody<T> extends {
           content: { "multipart/form-data": any };
         }
-      ? operations[T]["requestBody"]["content"]["multipart/form-data"]
+      ? NonNullable<OperationRequestBody<T>>["content"]["multipart/form-data"]
       : never
 >;
 
 export type ApiResponse<T extends keyof operations> = NonNullable<
-  operations[T]["responses"] extends {
+  OperationResponse<T> extends {
     "200": { content: { "application/json": { data: any } } };
   }
-    ? operations[T]["responses"]["200"]["content"]["application/json"]["data"]
+    ? OperationResponse<T>["200"]["content"]["application/json"]["data"]
     : never
 >;
 

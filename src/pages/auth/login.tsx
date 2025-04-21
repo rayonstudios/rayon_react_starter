@@ -22,7 +22,7 @@ const Login: React.FC<Props> = () => {
         <Form.Item
           name="email"
           rules={[
-            { required: true, message: Validations.reqd_msg("Email") },
+            Validations.requiredField("Email"),
             { validator: Validations.email },
           ]}
           validateFirst
@@ -32,9 +32,7 @@ const Login: React.FC<Props> = () => {
 
         <Form.Item
           name="password"
-          rules={[
-            { required: true, message: Validations.reqd_msg("Password") },
-          ]}
+          rules={[Validations.requiredField("Password")]}
         >
           <Input.Password
             prefix={<LockOutlined />}

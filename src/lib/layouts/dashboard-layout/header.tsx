@@ -3,17 +3,10 @@ import { useLang, useThemeMode } from "@/lib/contexts/root.context";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
 import { useAuth } from "@/modules/auth/hooks/auth.hooks";
 import { authActions } from "@/modules/auth/slices/auth.slice";
+import UserAvatar from "@/pages/users/components/user-avatar";
 import { DownOutlined, MenuOutlined } from "@ant-design/icons";
 import { useResponsive } from "ahooks";
-import {
-  Avatar,
-  Dropdown,
-  Layout,
-  Select,
-  Space,
-  Tooltip,
-  Typography,
-} from "antd";
+import { Dropdown, Layout, Select, Space, Tooltip } from "antd";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -127,8 +120,7 @@ function Header() {
             trigger={["click"]}
           >
             <Space align="center" className="cursor-pointer">
-              <Avatar src={profile.photo} />
-              <Typography.Text>{profile.name}</Typography.Text>
+              <UserAvatar user={profile} imgPreview={false} showRole />
               <DownOutlined />
             </Space>
           </Dropdown>

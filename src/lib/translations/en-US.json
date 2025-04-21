@@ -17,5 +17,9 @@
   "logout": {
     "title": "Logout",
     "message": "Are you sure you want to logout?"
+  },
+
+  "settings": {
+    "title": "Settings"
   }
 }
