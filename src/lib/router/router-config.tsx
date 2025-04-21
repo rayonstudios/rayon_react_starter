@@ -1,8 +1,8 @@
 import { Role } from "@/modules/auth/hooks/role.hooks";
 import NotFound from "@/pages/404/404";
 import Login from "@/pages/auth/login";
-import Home from "@/pages/home/home";
 import Posts from "@/pages/posts/posts";
+import SamplePage from "@/pages/sample-page/sample-page";
 import Settings from "@/pages/settings/settings";
 import Users from "@/pages/users/users";
 import {
@@ -39,77 +39,13 @@ export const useRouterConfig = (): RouterConfig[] => {
     {
       layoutType: "dashboard",
       authType: "private",
-      component: <Home />,
-      menuItem: {
-        title: t("sidebar:home"),
-        icon: <DashboardOutlined />,
-      },
-      route: {
-        path: "/",
-      },
-      subRoutes: [
-        {
-          layoutType: "dashboard",
-          authType: "private",
-          component: <Home />,
-          menuItem: {
-            title: "Home 2",
-            icon: <DashboardOutlined />,
-          },
-          route: {
-            path: "home-2",
-          },
-        },
-        {
-          layoutType: "dashboard",
-          authType: "private",
-          component: <Home />,
-          menuItem: {
-            title: "Home 3",
-            icon: <DashboardOutlined />,
-          },
-          route: {
-            path: "home-3",
-          },
-          subRoutes: [
-            {
-              layoutType: "dashboard",
-              authType: "private",
-              component: <Home />,
-              menuItem: {
-                title: "Home 3.1",
-                icon: <DashboardOutlined />,
-              },
-              route: {
-                path: "home-3.1",
-              },
-            },
-          ],
-        },
-      ],
-    },
-    {
-      layoutType: "dashboard",
-      authType: "private",
-      component: <Home />,
-      menuItem: {
-        title: "Page 2",
-        icon: <DashboardOutlined />,
-      },
-      route: {
-        path: "/page-2",
-      },
-    },
-    {
-      layoutType: "dashboard",
-      authType: "private",
       component: <Posts />,
       menuItem: {
         title: t("sidebar:posts"),
         icon: <BookOutlined />,
       },
       route: {
-        path: "/posts",
+        path: "/",
       },
     },
     {
@@ -124,6 +60,58 @@ export const useRouterConfig = (): RouterConfig[] => {
         path: "/users",
       },
       allowedRoles: [Role.SUPER_ADMIN],
+    },
+    {
+      layoutType: "dashboard",
+      authType: "private",
+      component: <SamplePage title="Parent" />,
+      menuItem: {
+        title: "Parent",
+        icon: <DashboardOutlined />,
+      },
+      route: {
+        path: "/parent",
+      },
+      subRoutes: [
+        {
+          layoutType: "dashboard",
+          authType: "private",
+          component: <SamplePage title="Child 1" />,
+          menuItem: {
+            title: "Child 1",
+            icon: <DashboardOutlined />,
+          },
+          route: {
+            path: "child-1",
+          },
+        },
+        {
+          layoutType: "dashboard",
+          authType: "private",
+          component: <SamplePage title="Child 2" />,
+          menuItem: {
+            title: "Child 2",
+            icon: <DashboardOutlined />,
+          },
+          route: {
+            path: "child-2",
+          },
+          subRoutes: [
+            {
+              layoutType: "dashboard",
+              authType: "private",
+              component: <SamplePage title="Grand Child" />,
+              menuItem: {
+                title: "Grand Child",
+                icon: <DashboardOutlined />,
+              },
+              route: {
+                path: "grand-child",
+              },
+            },
+          ],
+        },
+      ],
     },
     {
       layoutType: "dashboard",

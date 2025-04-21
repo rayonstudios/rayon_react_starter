@@ -12,12 +12,14 @@ const initialState: {
   status: "processing" | "authenticated" | "unauthenticated";
   loginStatus: ThunkStatus;
   logoutStatus: ThunkStatus;
+  changePasswordStatus: ThunkStatus;
 } = {
   computedRoutes: undefined,
   sidebarCollapsed: false,
   status: "processing",
   loginStatus: ThunkStatus.IDLE,
   logoutStatus: ThunkStatus.IDLE,
+  changePasswordStatus: ThunkStatus.IDLE,
 };
 
 const login = createAsyncThunk(
@@ -29,10 +31,16 @@ const login = createAsyncThunk(
     return res;
   }
 );
+
 const logout = createAsyncThunk(`${name}/logout`, async () => {
   localStorage.removeItem("accessToken");
   localStorage.removeItem("refreshToken");
 });
+
+const changePassword = createAsyncThunk(
+  `${name}/changePassword`,
+  authService.changePassword
+);
 
 //slice
 export const authSlice = createSlice({
@@ -60,4 +68,9 @@ export const authSlice = createSlice({
 });
 
 //action creators
-export const authActions = { ...authSlice.actions, login, logout };
+export const authActions = {
+  ...authSlice.actions,
+  login,
+  logout,
+  changePassword,
+};

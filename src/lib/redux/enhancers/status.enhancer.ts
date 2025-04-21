@@ -9,6 +9,7 @@ import {
 } from "@reduxjs/toolkit";
 import { Reducer } from "react";
 import { ThunkStatus } from "../../types/misc";
+import { RootState, useAppSelector } from "../store";
 
 //@ts-expect-error
 export const statusHandlerEnahncer: StoreEnhancer<{}, {}> =
@@ -44,3 +45,13 @@ export const statusHandlerEnahncer: StoreEnhancer<{}, {}> =
 
     return cs(statusHandlerReducer, initialState, enhancer);
   };
+
+export const useIsLoading = <
+  S extends keyof RootState,
+  K extends keyof RootState[S],
+>(
+  slice: S,
+  key: K
+): boolean => {
+  return useAppSelector((state) => state[slice][key] === ThunkStatus.LOADING);
+};

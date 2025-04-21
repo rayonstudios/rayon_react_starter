@@ -19,6 +19,7 @@ const Posts: React.FC<Props> = () => {
       <ServerPaginatedTable<Post>
         url="posts?populate=true"
         columns={[
+          { title: "Title", dataIndex: "title", ellipsis: true, fixed: "left" },
           {
             title: "Date",
             dataIndex: "created_at",
@@ -33,7 +34,6 @@ const Posts: React.FC<Props> = () => {
             dataIndex: "author",
             render: (_, record) => <UserAvatar user={record.author} />,
           },
-          { title: "Title", dataIndex: "title", ellipsis: true },
           {
             title: "Labels",
             dataIndex: "labels",

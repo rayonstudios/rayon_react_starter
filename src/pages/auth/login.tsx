@@ -1,25 +1,23 @@
 import Validations from "@/lib/utils/validations";
 import { useAuth } from "@/modules/auth/hooks/auth.hooks";
-import { authActions } from "@/modules/auth/slices/auth.slice";
+import { AuthLoginBody } from "@/modules/auth/types/auth.types";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
 import { Button, Form, Input } from "antd";
 import React from "react";
-
-type FormValues = Parameters<typeof authActions.login>[0];
 
 interface Props {}
 
 const Login: React.FC<Props> = () => {
   const { login, loginLoading } = useAuth();
 
-  const onFinish = (values: FormValues) => {
+  const onFinish = (values: AuthLoginBody) => {
     login(values);
   };
 
   return (
     <div>
-      <Form<FormValues> onFinish={onFinish}>
-        <Form.Item
+      <Form<AuthLoginBody> onFinish={onFinish}>
+        <Form.Item<AuthLoginBody>
           name="email"
           rules={[
             Validations.requiredField("Email"),
@@ -30,7 +28,7 @@ const Login: React.FC<Props> = () => {
           <Input prefix={<MailOutlined />} placeholder="Email" size="large" />
         </Form.Item>
 
-        <Form.Item
+        <Form.Item<AuthLoginBody>
           name="password"
           rules={[Validations.requiredField("Password")]}
         >

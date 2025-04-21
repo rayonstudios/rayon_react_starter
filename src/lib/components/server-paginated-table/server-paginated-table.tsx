@@ -55,7 +55,7 @@ export type ServerPaginatedTableProps<T> = TableProps<T> & {
 
 export default function ServerPaginatedTable<T extends AnyObject>({
   url,
-  pageSize = 20,
+  pageSize = 10,
   dataSource,
   onDocsChange,
   columns,

@@ -1,7 +1,7 @@
 import apiClient, { withApiResponseHandling } from "@/lib/openapi-fetch.config";
-import { ApiBody } from "@/lib/types/api";
+import { AuthChangePasswordBody, AuthLoginBody } from "../types/auth.types";
 
-async function login(payload: ApiBody<"AuthLogin">) {
+async function login(payload: AuthLoginBody) {
   const { data } = await withApiResponseHandling(
     apiClient.POST("/auth/login", { body: payload })
   );
@@ -19,9 +19,17 @@ async function refreshToken(refreshToken: string) {
   return data;
 }
 
+async function changePassword(payload: AuthChangePasswordBody) {
+  const { data: response } = await withApiResponseHandling(
+    apiClient.POST("/auth/change-password", { body: payload })
+  );
+  return response;
+}
+
 const authService = {
   login,
   refreshToken,
+  changePassword,
 };
 
 export default authService;

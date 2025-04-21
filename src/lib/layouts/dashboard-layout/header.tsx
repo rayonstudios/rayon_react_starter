@@ -4,7 +4,12 @@ import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
 import { useAuth } from "@/modules/auth/hooks/auth.hooks";
 import { authActions } from "@/modules/auth/slices/auth.slice";
 import UserAvatar from "@/pages/users/components/user-avatar";
-import { DownOutlined, MenuOutlined } from "@ant-design/icons";
+import {
+  DownOutlined,
+  LogoutOutlined,
+  MenuOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
 import { useResponsive } from "ahooks";
 import { Dropdown, Layout, Select, Space, Tooltip } from "antd";
 import { useCallback } from "react";
@@ -35,6 +40,7 @@ function Header() {
       title: t("logout:title"),
       message: t("logout:message"),
       onOk: () => logout().unwrap().catch(console.error),
+      okType: "danger",
     });
   }, []);
 
@@ -107,11 +113,14 @@ function Header() {
                 {
                   key: "settings",
                   label: "Settings",
+                  icon: <SettingOutlined />,
                   onClick: onSettingsClicked,
                 },
                 {
                   key: "logout",
                   label: "Logout",
+                  danger: true,
+                  icon: <LogoutOutlined />,
                   disabled: logoutLoading,
                   onClick: onLogout,
                 },

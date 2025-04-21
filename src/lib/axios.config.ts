@@ -45,7 +45,10 @@ axios.interceptors.response.use(undefined, async (error) => {
     }${error.message}`;
   error.message = msg;
 
-  if (error.response?.status === 401) {
+  if (
+    store.getState().auth.status !== "unauthenticated" &&
+    error.response?.status === 401
+  ) {
     if (
       !["auth/login", "auth/refresh"].some((url) =>
         error.config.url.includes(url)

@@ -9,9 +9,11 @@ export const name = "profile";
 const initialState: {
   data?: Profile;
   fetchStatus: ThunkStatus;
+  updateStatus: ThunkStatus;
 } = {
   data: undefined,
   fetchStatus: ThunkStatus.IDLE,
+  updateStatus: ThunkStatus.IDLE,
 };
 
 const fetch = createAsyncThunk(`${name}/fetch`, profileService.fetch);
