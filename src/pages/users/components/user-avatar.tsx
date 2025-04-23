@@ -1,6 +1,6 @@
 import ServerImg from "@/lib/components/server-img/server-img";
-import { User } from "@/lib/types/api";
 import { kebabCaseToWords } from "@/lib/utils/string.utils";
+import { User } from "@/modules/user/types/user.types";
 import { Space, Typography } from "antd";
 import React from "react";
 

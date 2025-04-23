@@ -1,11 +1,16 @@
 import AlertPopup from "@/lib/components/alert-popup/alert-popup";
 import PageHeading from "@/lib/components/page-heading/page-heading";
-import ServerPaginatedTable from "@/lib/components/server-paginated-table/server-paginated-table";
+import ServerPaginatedTable, {
+  GetHelpers,
+} from "@/lib/components/server-paginated-table/server-paginated-table";
 import { useLang } from "@/lib/contexts/root.context";
-import { User } from "@/lib/types/api";
+import { useAppDispatch } from "@/lib/redux/store";
 import { formattedDateTime } from "@/lib/utils/dateTime.utils";
+import { suppressError } from "@/lib/utils/error.utils";
 import { kebabCaseToWords } from "@/lib/utils/string.utils";
 import { Role } from "@/modules/auth/hooks/role.hooks";
+import { userActions } from "@/modules/user/slices/user.slice";
+import { User } from "@/modules/user/types/user.types";
 import {
   CheckCircleFilled,
   DeleteOutlined,
@@ -13,16 +18,18 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import { Button, Space, Tag, Tooltip, Typography } from "antd";
-import React from "react";
+import React, { useRef } from "react";
 import UserAvatar from "./components/user-avatar";
 
 interface Props {}
 
 const Users: React.FC<Props> = () => {
   const { t } = useLang();
+  const dispatch = useAppDispatch();
+  const tableHelpers = useRef<GetHelpers<User>>();
 
   const onEdit = (user: User) => {
-    console.log(user);
+    console.log("user: ", user);
   };
 
   const onDelete = (user: User) => {
@@ -34,13 +41,15 @@ const Users: React.FC<Props> = () => {
         </>
       ),
       okType: "danger",
-      // onOk: () =>
-      //   dispatch(userActions.remove(user.id))
-      //     .unwrap()
-      //     .then(() => {
-      //       onDeleteSucces(user);
-      //     })
-      //     .catch(console.error),
+      onOk: () =>
+        dispatch(userActions.remove(user.id!))
+          .unwrap()
+          .then(() => {
+            tableHelpers.current?.setData((data) =>
+              data.filter((item) => item.id !== user.id)
+            );
+          })
+          .catch(suppressError),
     });
   };
 
@@ -49,6 +58,7 @@ const Users: React.FC<Props> = () => {
       <PageHeading>{t("sidebar:users")}</PageHeading>
       <ServerPaginatedTable<User>
         url="users"
+        getHelpers={(helpers) => (tableHelpers.current = helpers)}
         filters={[
           {
             label: "Search",

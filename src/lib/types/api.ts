@@ -35,7 +35,3 @@ export type ApiResponse<T extends keyof operations> = NonNullable<
     ? OperationResponse<T>["200"]["content"]["application/json"]["data"]
     : never
 >;
-
-export type Profile = ApiResponse<"ProfileFetch">;
-export type Post = ApiResponse<"PostFetch">;
-export type User = ApiResponse<"UserFetch">;

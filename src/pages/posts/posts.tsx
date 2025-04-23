@@ -1,9 +1,9 @@
 import PageHeading from "@/lib/components/page-heading/page-heading";
 import ServerPaginatedTable from "@/lib/components/server-paginated-table/server-paginated-table";
 import { useLang } from "@/lib/contexts/root.context";
-import { Post } from "@/lib/types/api";
 import { getColorFromStr } from "@/lib/utils/colors";
 import { formattedDateTime } from "@/lib/utils/dateTime.utils";
+import { Post } from "@/modules/posts/post.types";
 import { Tag, Typography } from "antd";
 import React from "react";
 import UserAvatar from "../users/components/user-avatar";
