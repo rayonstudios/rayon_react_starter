@@ -2,7 +2,8 @@ import { Role } from "@/modules/auth/types/profile.type";
 import NotFound from "@/pages/404/404";
 import Login from "@/pages/auth/login";
 import Home from "@/pages/home/home";
-import { DashboardOutlined } from "@ant-design/icons";
+import Users from "@/pages/users/users";
+import { DashboardOutlined, UserOutlined } from "@ant-design/icons";
 import { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../redux/store";
@@ -32,13 +33,25 @@ export const useRouterConfig = (): RouterConfig[] => {
     {
       layoutType: "dashboard",
       authType: "private",
+      component: <Users />,
+      menuItem: {
+        title: "Users",
+        icon: <UserOutlined />,
+      },
+      route: {
+        path: "/",
+      },
+    },
+    {
+      layoutType: "dashboard",
+      authType: "private",
       component: <Home />,
       menuItem: {
         title: t("sidebar:home"),
         icon: <DashboardOutlined />,
       },
       route: {
-        path: "/",
+        path: "/home",
       },
       subRoutes: [
         {
