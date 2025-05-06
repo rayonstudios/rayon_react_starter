@@ -1,5 +1,10 @@
 import apiClient, { withApiResponseHandling } from "@/lib/openapi-fetch.config";
-import { AuthChangePasswordBody, AuthLoginBody } from "../types/auth.types";
+import {
+  AuthChangePasswordBody,
+  AuthForgotPasswordBody,
+  AuthLoginBody,
+  AuthResetPasswordBody,
+} from "../types/auth.types";
 
 async function login(payload: AuthLoginBody) {
   const { data } = await withApiResponseHandling(
@@ -26,10 +31,26 @@ async function changePassword(payload: AuthChangePasswordBody) {
   return response;
 }
 
+async function forgotPassword(payload: AuthForgotPasswordBody) {
+  const { data: response } = await withApiResponseHandling(
+    apiClient.POST("/auth/forgot-password", { body: payload })
+  );
+  return response;
+}
+
+async function resetPassword(payload: AuthResetPasswordBody) {
+  const { data: response } = await withApiResponseHandling(
+    apiClient.POST("/auth/reset-password", { body: payload })
+  );
+  return response;
+}
+
 const authService = {
   login,
   refreshToken,
   changePassword,
+  forgotPassword,
+  resetPassword,
 };
 
 export default authService;

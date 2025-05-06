@@ -104,7 +104,10 @@ const Settings: React.FC<Props> = () => {
         </Form.Item>
         <Form.Item<ChangePasswordForm>
           name="newPassword"
-          rules={[Validations.requiredField()]}
+          rules={[
+            Validations.requiredField(),
+            { validator: Validations.minLen(6) },
+          ]}
         >
           <Input.Password placeholder="New Password" />
         </Form.Item>
@@ -122,7 +125,7 @@ const Settings: React.FC<Props> = () => {
             }),
           ]}
         >
-          <Input.Password placeholder="Re-enter new Password" />
+          <Input.Password placeholder="Confirm new password" />
         </Form.Item>
         <Form.Item>
           <Button

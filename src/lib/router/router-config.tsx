@@ -1,6 +1,8 @@
 import { Role } from "@/modules/auth/hooks/role.hooks";
 import NotFound from "@/pages/404/404";
+import ForgotPassword from "@/pages/auth/forgot-password";
 import Login from "@/pages/auth/login";
+import ResetPassword from "@/pages/auth/reset-password";
 import Posts from "@/pages/posts/posts";
 import SamplePage from "@/pages/sample-page/sample-page";
 import Settings from "@/pages/settings/settings";
@@ -127,6 +129,22 @@ export const useRouterConfig = (): RouterConfig[] => {
       component: <Login />,
       route: {
         path: "/login",
+      },
+    },
+    {
+      layoutType: "auth",
+      authType: "public",
+      component: <ForgotPassword />,
+      route: {
+        path: "/forgot-password",
+      },
+    },
+    {
+      layoutType: "auth",
+      authType: "public",
+      component: <ResetPassword />,
+      route: {
+        path: "/reset-password",
       },
     },
     {

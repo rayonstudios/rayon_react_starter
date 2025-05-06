@@ -13,6 +13,8 @@ const initialState: {
   loginStatus: ThunkStatus;
   logoutStatus: ThunkStatus;
   changePasswordStatus: ThunkStatus;
+  forgotPasswordStatus: ThunkStatus;
+  resetPasswordStatus: ThunkStatus;
 } = {
   computedRoutes: undefined,
   sidebarCollapsed: false,
@@ -20,6 +22,8 @@ const initialState: {
   loginStatus: ThunkStatus.IDLE,
   logoutStatus: ThunkStatus.IDLE,
   changePasswordStatus: ThunkStatus.IDLE,
+  forgotPasswordStatus: ThunkStatus.IDLE,
+  resetPasswordStatus: ThunkStatus.IDLE,
 };
 
 const login = createAsyncThunk(
@@ -40,6 +44,16 @@ const logout = createAsyncThunk(`${name}/logout`, async () => {
 const changePassword = createAsyncThunk(
   `${name}/changePassword`,
   authService.changePassword
+);
+
+const forgotPassword = createAsyncThunk(
+  `${name}/forgotPassword`,
+  authService.forgotPassword
+);
+
+const resetPassword = createAsyncThunk(
+  `${name}/resetPassword`,
+  authService.resetPassword
 );
 
 //slice
@@ -73,4 +87,6 @@ export const authActions = {
   login,
   logout,
   changePassword,
+  forgotPassword,
+  resetPassword,
 };

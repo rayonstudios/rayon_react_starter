@@ -2,7 +2,7 @@ import Validations from "@/lib/utils/validations";
 import { useAuth } from "@/modules/auth/hooks/auth.hooks";
 import { AuthLoginBody } from "@/modules/auth/types/auth.types";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, Typography } from "antd";
 import React from "react";
 
 interface Props {}
@@ -31,6 +31,7 @@ const Login: React.FC<Props> = () => {
         <Form.Item<AuthLoginBody>
           name="password"
           rules={[Validations.requiredField("Password")]}
+          className="mb-1"
         >
           <Input.Password
             prefix={<LockOutlined />}
@@ -39,8 +40,19 @@ const Login: React.FC<Props> = () => {
           />
         </Form.Item>
 
-        <Form.Item className="float-right mb-0">
-          <Button loading={loginLoading} type="primary" htmlType="submit">
+        <div className="flex justify-end">
+          <Typography.Link href="/forgot-password" className="text-xs">
+            Forgot password?
+          </Typography.Link>
+        </div>
+
+        <Form.Item className="mb-0 mt-5">
+          <Button
+            className="w-full"
+            loading={loginLoading}
+            type="primary"
+            htmlType="submit"
+          >
             Log in
           </Button>
         </Form.Item>
