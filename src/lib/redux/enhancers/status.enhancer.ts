@@ -11,7 +11,7 @@ import { Reducer } from "react";
 import { ThunkStatus } from "../../types/misc";
 import { RootState, useAppSelector } from "../store";
 
-//@ts-expect-error
+//@ts-ignore
 export const statusHandlerEnahncer: StoreEnhancer<{}, {}> =
   (cs: typeof createStore) =>
   (

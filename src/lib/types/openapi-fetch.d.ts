@@ -415,12 +415,15 @@ export interface components {
             data: components["schemas"]["PaginationResponse_SanitizedUser_"] | null;
             error: string | null;
         };
+        /** @enum {string} */
+        Role: "user" | "admin" | "super-admin";
         UserFetchList: {
             /** Format: double */
             limit?: number;
             /** Format: double */
             page?: number;
             search?: string;
+            role?: components["schemas"]["Role"];
         };
         "Expand_Optional_UserMutable.bio__": {
             bio?: string;
@@ -529,8 +532,6 @@ export interface components {
             [key: string]: unknown;
         };
         GenericObject: components["schemas"]["Record_string.any_"];
-        /** @enum {string} */
-        Role: "user" | "admin" | "super-admin";
         "Expand_Omit_NotificationMutable.event_-and-_roles_63_-Role-Array--userIds_63_-string-Array--metadata_63_-GenericObject__": {
             title: string;
             body: string;
@@ -746,6 +747,7 @@ export interface operations {
                 limit?: number;
                 page?: number;
                 search?: string;
+                role?: components["schemas"]["Role"];
             };
             header?: never;
             path?: never;

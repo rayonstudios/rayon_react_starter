@@ -138,7 +138,7 @@ export default function ServerPaginatedSelect({
       }}
       loading={loading}
       dataSource={_data}
-      // @ts-expect-error
+      // @ts-ignore
       renderItem={renderItem}
       valueResolver={valueResolver}
       style={style}

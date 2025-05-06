@@ -203,12 +203,12 @@ const RootContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
     if (accept) ip.setAttribute("accept", accept);
     if (multiple) ip.setAttribute("multiple", multiple.toString());
     if (onChange) {
-      //@ts-expect-error
+      //@ts-ignore
       ip.onchange = (e: { target: { files: File[] } }) => {
         const files = [];
         for (const file of e.target.files) files.push(file);
         typeof onChange === "function" && files.length && onChange(files);
-        //@ts-expect-error
+        //@ts-ignore
         e.target.value = "";
       };
     }

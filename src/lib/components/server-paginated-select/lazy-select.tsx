@@ -110,7 +110,7 @@ function LazySelect({
       style={style}
       value={_idResolver(value)}
       defaultValue={_idResolver(defaultValue)}
-      // @ts-expect-error
+      // @ts-ignore
       options={data.map((item, ix) => {
         const value = item._loading ? ix + "loading" : item.id;
         const children: any =
