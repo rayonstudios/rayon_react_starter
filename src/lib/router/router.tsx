@@ -5,15 +5,17 @@ import DashboardLayout from "@/lib/layouts/dashboard-layout/dashboard-layout";
 import EmptyLayout from "@/lib/layouts/empty-layout";
 import { useAppDispatch } from "@/lib/redux/store";
 import { useAuth } from "@/modules/auth/hooks/auth.hooks";
-import { useRole } from "@/modules/auth/hooks/role.hooks";
+import { Role, useRole } from "@/modules/auth/hooks/role.hooks";
 import { authActions } from "@/modules/auth/slices/auth.slice";
 import { profileActions } from "@/modules/auth/slices/profile.slice";
+import NotFound from "@/pages/404/404";
 import _ from "lodash";
 import React, {
   PropsWithChildren,
   ReactNode,
   useEffect,
   useLayoutEffect,
+  useRef,
   useState,
 } from "react";
 import {
@@ -87,7 +89,7 @@ export default function Router() {
   const dispatch = useAppDispatch();
   const [ar, cr] = routeRenderer(routerConfig);
   dispatch(
-    authActions.setComputedRoutes(cr.map((r) => _.pick(r, ["route", "key"])))
+    authActions.setComputedRoutes(cr?.map((r) => _.pick(r, ["route", "key"])))
   );
 
   return (
@@ -163,27 +165,40 @@ const RoleCheckWrapper: React.FC<
   PropsWithChildren & { allowedRoles: RouterConfig["allowedRoles"] }
 > = ({ children, allowedRoles }) => {
   const [isRendered, setIsRendered] = useState(false);
+  const isAllowed = useRef(true);
   const role = useRole();
   const dispatch = useAppDispatch();
   const { status: authStatus } = useAuth();
-  const navigate = useNavigate();
+
+  if (allowedRoles?.includes(Role.ADMIN)) allowedRoles.push(Role.SUPER_ADMIN);
 
   useEffect(() => {
     if (authStatus === "authenticated") {
       dispatch(profileActions.fetch());
     }
-  }, [authStatus]);
+  }, []);
 
   useLayoutEffect(() => {
     if (authStatus === "authenticated" && !role) {
       setIsRendered(false);
-    } else if (Array.isArray(allowedRoles) && !allowedRoles.includes(role!)) {
-      navigate("/not-found");
-      setIsRendered(false);
+    } else if (
+      Array.isArray(allowedRoles) &&
+      !allowedRoles.includes(role as Role)
+    ) {
+      isAllowed.current = false;
+      setIsRendered(true);
     } else {
       setIsRendered(true);
     }
   }, [allowedRoles, role, authStatus]);
 
-  return isRendered ? children : <PageSpinner />;
+  return isRendered ? (
+    isAllowed.current ? (
+      children
+    ) : (
+      <NotFound />
+    )
+  ) : (
+    <PageSpinner />
+  );
 };

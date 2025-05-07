@@ -9,4 +9,7 @@ export enum ThunkStatus {
 }
 
 export type GenericObject = Record<string, any>;
+
 export type KeyValuePair = Record<string, string>;
+
+export type Modify<T, R> = Omit<T, keyof R> & R;

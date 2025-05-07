@@ -17,8 +17,8 @@ const axios = axiosApi.create({
 
 axios.interceptors.request.use((reqConfig) => {
   const token = localStorage.getItem("accessToken");
-  if (token && !reqConfig.headers.Authorization) {
-    reqConfig.headers.Authorization = `Bearer ${token}`;
+  if (token && !reqConfig.headers.toJSON().authorization) {
+    reqConfig.headers.authorization = `Bearer ${token}`;
   }
   return reqConfig;
 });
@@ -45,10 +45,19 @@ axios.interceptors.response.use(undefined, async (error) => {
     }${error.message}`;
   error.message = msg;
 
-  if (error.response?.status === 401) {
-    if (!["auth/login", "auth/refresh"].includes(error.config.url!)) {
+  if (
+    store.getState().auth.status !== "unauthenticated" &&
+    error.response?.status === 401
+  ) {
+    if (
+      !["auth/login", "auth/refresh"].some((url) =>
+        error.config.url.includes(url)
+      )
+    ) {
       // retry request after refreshing token
-      const { accessToken, refreshToken } = await authService.refreshToken();
+      const { accessToken, refreshToken } = await authService.refreshToken(
+        localStorage.getItem("refreshToken")!
+      );
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
       error.config.headers.Authorization = `Bearer ${accessToken}`;

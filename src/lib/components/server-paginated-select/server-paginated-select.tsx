@@ -18,7 +18,7 @@ type ServerPaginatedSelectProps = React.ComponentProps<typeof Select> & {
   value?: any;
   dataSource?: (data: any[]) => any[];
   searchDebouncing?: number;
-  fetchDefaultValue: (value: any) => Promise<any>;
+  fetchDefaultValue?: (value: any) => Promise<any>;
 };
 
 export default function ServerPaginatedSelect({
@@ -65,8 +65,8 @@ export default function ServerPaginatedSelect({
         const list = Array.isArray(data)
           ? data
           : Array.isArray(data.docs)
-          ? data.docs
-          : [];
+            ? data.docs
+            : [];
 
         if (!pageSize || list.length < pageSize) setNoMore(true);
 

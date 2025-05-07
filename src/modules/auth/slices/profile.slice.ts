@@ -1,7 +1,7 @@
 import { ThunkStatus } from "@/lib/types/misc";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import profileService from "../services/profile.service";
-import { Profile } from "../types/profile.type";
+import { Profile } from "../types/profile.types";
 
 export const name = "profile";
 
@@ -9,12 +9,16 @@ export const name = "profile";
 const initialState: {
   data?: Profile;
   fetchStatus: ThunkStatus;
+  updateStatus: ThunkStatus;
 } = {
   data: undefined,
   fetchStatus: ThunkStatus.IDLE,
+  updateStatus: ThunkStatus.IDLE,
 };
 
 const fetch = createAsyncThunk(`${name}/fetch`, profileService.fetch);
+
+const update = createAsyncThunk(`${name}/update`, profileService.update);
 
 //slice
 export const profileSlice = createSlice({
@@ -22,11 +26,15 @@ export const profileSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetch.fulfilled, (state, action) => {
-      state.data = action.payload;
-    });
+    builder
+      .addCase(fetch.fulfilled, (state, action) => {
+        state.data = action.payload;
+      })
+      .addCase(update.fulfilled, (state, action) => {
+        state.data = action.payload;
+      });
   },
 });
 
 //action creators
-export const profileActions = { ...profileSlice.actions, fetch };
+export const profileActions = { ...profileSlice.actions, fetch, update };

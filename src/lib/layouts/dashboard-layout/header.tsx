@@ -3,17 +3,15 @@ import { useLang, useThemeMode } from "@/lib/contexts/root.context";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
 import { useAuth } from "@/modules/auth/hooks/auth.hooks";
 import { authActions } from "@/modules/auth/slices/auth.slice";
-import { DownOutlined, MenuOutlined } from "@ant-design/icons";
-import { useResponsive } from "ahooks";
+import UserAvatar from "@/pages/users/components/user-avatar";
 import {
-  Avatar,
-  Dropdown,
-  Layout,
-  Select,
-  Space,
-  Tooltip,
-  Typography,
-} from "antd";
+  DownOutlined,
+  LogoutOutlined,
+  MenuOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
+import { useResponsive } from "ahooks";
+import { Dropdown, Layout, Select, Space, Tooltip } from "antd";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -42,6 +40,7 @@ function Header() {
       title: t("logout:title"),
       message: t("logout:message"),
       onOk: () => logout().unwrap().catch(console.error),
+      okType: "danger",
     });
   }, []);
 
@@ -114,11 +113,14 @@ function Header() {
                 {
                   key: "settings",
                   label: "Settings",
+                  icon: <SettingOutlined />,
                   onClick: onSettingsClicked,
                 },
                 {
                   key: "logout",
                   label: "Logout",
+                  danger: true,
+                  icon: <LogoutOutlined />,
                   disabled: logoutLoading,
                   onClick: onLogout,
                 },
@@ -127,8 +129,7 @@ function Header() {
             trigger={["click"]}
           >
             <Space align="center" className="cursor-pointer">
-              <Avatar src={profile.picture} />
-              <Typography.Text>{profile.name}</Typography.Text>
+              <UserAvatar user={profile} imgPreview={false} showRole />
               <DownOutlined />
             </Space>
           </Dropdown>

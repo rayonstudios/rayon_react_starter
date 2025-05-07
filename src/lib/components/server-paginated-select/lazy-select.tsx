@@ -1,6 +1,6 @@
 import { Select, Skeleton } from "antd";
-import { useCallback, useEffect, useRef } from "react";
 import { debounce } from "lodash";
+import { useCallback, useEffect, useRef } from "react";
 
 type LazySelectProps = {
   style?: React.CSSProperties;
@@ -12,11 +12,8 @@ type LazySelectProps = {
   debouncing?: number;
   loading?: boolean;
   skeletonProps?: any;
-  optionContainerStyle?: React.CSSProperties;
-  containerStyle?: React.CSSProperties;
   valueResolver?: (item: any) => any;
   idResolver?: (value: any) => any;
-  optionProps?: any;
   onChange?: (value: any) => void;
   value?: any;
   defaultValue?: any;
@@ -32,11 +29,8 @@ function LazySelect({
   debouncing = 800,
   loading,
   skeletonProps,
-  optionContainerStyle,
-  containerStyle,
   valueResolver, //how to get value from item when onChange is called
   idResolver, //how to get unique id from above value (valueResolver)
-  optionProps,
   onChange,
   value,
   defaultValue,

@@ -1,7 +1,7 @@
 import { store, useAppSelector } from "@/lib/redux/store";
 import { getRoutePath } from "@/lib/router/router";
 import { RouterConfig, useRouterConfig } from "@/lib/router/router-config";
-import { useRole } from "@/modules/auth/hooks/role.hooks";
+import { Role, useRole } from "@/modules/auth/hooks/role.hooks";
 import { authActions } from "@/modules/auth/slices/auth.slice";
 import { Menu } from "antd";
 import { useCallback } from "react";
@@ -26,9 +26,12 @@ export default function MainMenu({ closeOnNavigate = false, ...props }) {
     (routes: RouterConfig[], prefix = "", basePath = "") => {
       return routes.map((route, i) => {
         if (!route.menuItem) return null;
+
+        if (route.allowedRoles?.includes(Role.ADMIN))
+          route.allowedRoles.push(Role.SUPER_ADMIN);
         if (
           Array.isArray(route.allowedRoles) &&
-          !route.allowedRoles.includes(role!)
+          !route.allowedRoles.includes(role as Role)
         )
           return null;
 
