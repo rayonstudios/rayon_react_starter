@@ -1,14 +1,14 @@
 {
   "name": "rayon_react_starter",
   "private": true,
-  "version": "1.4",
+  "version": "2.0",
   "description": "Rayon React Starter is an opinionated starter kit designed to scaffold React projects quickly with a comprehensive and well-structured environment. Built with a modern tech stack and batteries included, it helps you start building your project in no time.",
   "type": "module",
   "scripts": {
     "dev": "npm run gen-types:dev && vite",
     "prod": "npm run gen-types:prod && vite --mode production",
-    "build:prod": "tsc && vite build",
-    "build:dev": "tsc && vite build --mode development",
+    "build:prod": "npm run gen-types:prod && tsc && vite build",
+    "build:dev": "npm run gen-types:dev && tsc && vite build --mode development",
     "gen-types:dev": "tsx scripts/gen-openapi-types.ts development",
     "gen-types:prod": "tsx scripts/gen-openapi-types.ts production",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",

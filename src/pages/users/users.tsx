@@ -115,6 +115,7 @@ const Users: React.FC<Props> = () => {
             dataIndex: "name",
             render: (_, record) => <UserAvatar user={record} />,
             fixed: "left",
+            sorter: true,
           },
           {
             title: "Creation Date",

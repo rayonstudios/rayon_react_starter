@@ -75,6 +75,8 @@ export default function ServerPaginatedTable<T extends AnyObject>({
     () => columns?.find((col) => col.defaultSortOrder),
     [columns]
   );
+  const defaultSortField =
+    (defaultSortCol as any)?.dataIndex || defaultSortCol?.key || "";
   const initialState = {
     current: 1,
     pageSize,
@@ -82,8 +84,7 @@ export default function ServerPaginatedTable<T extends AnyObject>({
       (acc, filter) => ({ ...acc, [`filter.${filter.key}`]: "" }),
       {}
     ),
-    ["sort.field"]:
-      (defaultSortCol as any)?.dataIndex || defaultSortCol?.key || "",
+    ["sort.field"]: defaultSortField,
     ["sort.order"]: defaultSortCol?.defaultSortOrder || "",
   };
   const [data, setData] = useState<T[]>([]);
@@ -99,6 +100,17 @@ export default function ServerPaginatedTable<T extends AnyObject>({
     sorters
   ) => {
     const sortObj = (Array.isArray(sorters) ? sorters[0] : sorters) || {};
+
+    // if sorter is removed from a non-default column, set it to default
+    if (
+      defaultSortField &&
+      sortObj.field !== defaultSortField &&
+      !sortObj.order
+    ) {
+      sortObj.field = defaultSortField;
+      sortObj.order = defaultSortCol?.defaultSortOrder;
+    }
+
     setTableParams({
       ...tableParams,
       ["sort.field"]: sortObj?.field || "",

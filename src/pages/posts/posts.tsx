@@ -19,10 +19,18 @@ const Posts: React.FC<Props> = () => {
       <ServerPaginatedTable<Post>
         url="posts?populate=true"
         columns={[
-          { title: "Title", dataIndex: "title", ellipsis: true, fixed: "left" },
+          {
+            title: "Title",
+            dataIndex: "title",
+            ellipsis: true,
+            fixed: "left",
+            sorter: true,
+          },
           {
             title: "Date",
             dataIndex: "created_at",
+            sorter: true,
+            defaultSortOrder: "descend",
             render: (_, record) => (
               <Typography.Text>
                 {formattedDateTime(record.created_at)}
@@ -44,7 +52,7 @@ const Posts: React.FC<Props> = () => {
                 </Tag>
               )),
           },
-          { title: "Views", dataIndex: "views" },
+          { title: "Views", dataIndex: "views", sorter: true },
           {
             title: "Content",
             dataIndex: "text",
