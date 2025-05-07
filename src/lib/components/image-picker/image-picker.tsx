@@ -24,7 +24,7 @@ type ImagePickerProps = {
   listProps?: React.ComponentProps<typeof List>;
   imgProps?: React.ComponentProps<typeof ServerImg>;
   onChange?: (images: any[]) => void;
-  value?: string[];
+  value?: string | string[];
   editable?: boolean;
 };
 
@@ -41,7 +41,13 @@ export default function ImagePicker({
 }: ImagePickerProps) {
   const _value = useMemo(
     () =>
-      value?.map((item) => (typeof item === "string" ? urlToImg(item) : item)),
+      Array.isArray(value)
+        ? value
+            .filter((item) => !!item)
+            .map((item) => (typeof item === "string" ? urlToImg(item) : item))
+        : typeof value === "string"
+          ? [urlToImg(value)]
+          : value,
     [value]
   );
 
@@ -51,7 +57,7 @@ export default function ImagePicker({
   );
 
   useUpdateEffect(() => {
-    onChange && onChange(images.filter(isImage));
+    onChange && onChange(images.filter(isImage).map((img) => img.src));
   }, [images]);
 
   useEffect(() => {

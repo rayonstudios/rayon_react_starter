@@ -29,10 +29,9 @@ const Settings: React.FC<Props> = () => {
   const changePasswordLoading = useIsLoading("auth", "changePasswordStatus");
 
   const onUpdateProfile = (values: ProfileForm) => {
-    const data = omit(values, ["photo"]);
     dispatch(
       profileActions.update({
-        ...data,
+        ...values,
         photo: values.photo[0] instanceof File ? values.photo[0] : undefined,
       })
     )
@@ -98,21 +97,25 @@ const Settings: React.FC<Props> = () => {
       >
         <Form.Item<ChangePasswordForm>
           name="oldPassword"
+          label="Old Password"
           rules={[Validations.requiredField()]}
         >
-          <Input.Password placeholder="Old Password" />
+          <Input.Password />
         </Form.Item>
         <Form.Item<ChangePasswordForm>
           name="newPassword"
+          label="New Password"
           rules={[
             Validations.requiredField(),
             { validator: Validations.minLen(6) },
           ]}
+          validateFirst
         >
-          <Input.Password placeholder="New Password" />
+          <Input.Password />
         </Form.Item>
         <Form.Item<ChangePasswordForm>
           name="confirmPassword"
+          label="Confirm Password"
           rules={[
             Validations.requiredField(),
             ({ getFieldValue }) => ({
@@ -124,8 +127,9 @@ const Settings: React.FC<Props> = () => {
               },
             }),
           ]}
+          validateFirst
         >
-          <Input.Password placeholder="Confirm new password" />
+          <Input.Password />
         </Form.Item>
         <Form.Item>
           <Button

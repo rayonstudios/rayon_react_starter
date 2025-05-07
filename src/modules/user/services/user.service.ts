@@ -1,5 +1,23 @@
 import apiClient, { withApiResponseHandling } from "@/lib/openapi-fetch.config";
-import { UserUpdateBody } from "../types/user.types";
+import { UserCreateBody, UserUpdateBody } from "../types/user.types";
+
+async function fetch(id: string) {
+  const { data } = await withApiResponseHandling(
+    apiClient.GET("/users/{userId}", {
+      params: { path: { userId: id } },
+    })
+  );
+  return data;
+}
+
+async function create(payload: UserCreateBody) {
+  const { data } = await withApiResponseHandling(
+    apiClient.POST("/users", {
+      body: payload,
+    })
+  );
+  return data;
+}
 
 async function update(id: string, payload: UserUpdateBody) {
   const { data } = await withApiResponseHandling(
@@ -21,6 +39,8 @@ async function remove(id: string) {
 }
 
 const userService = {
+  fetch,
+  create,
   update,
   remove,
 };

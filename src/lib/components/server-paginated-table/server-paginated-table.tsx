@@ -2,8 +2,9 @@ import axios from "@/lib/axios.config";
 import { GenericObject } from "@/lib/types/misc";
 import { isNullish } from "@/lib/utils/misc.utils";
 import useUrlState from "@ahooksjs/use-url-state";
+import { ReloadOutlined } from "@ant-design/icons";
 import { useDeepCompareEffect, useUpdateEffect } from "ahooks";
-import { Table, TableProps } from "antd";
+import { Button, Table, TableProps, Tooltip } from "antd";
 import { AnyObject } from "antd/es/_util/type";
 import { ColumnsType } from "antd/es/table";
 import { capitalize, pickBy } from "lodash";
@@ -51,6 +52,7 @@ export type ServerPaginatedTableProps<T> = TableProps<T> & {
   showSizeChanger?: boolean;
   showQuickJumper?: boolean;
   showTotal?: (total: number, range: [number, number]) => string;
+  showRefresh?: boolean;
 };
 
 export default function ServerPaginatedTable<T extends AnyObject>({
@@ -66,30 +68,29 @@ export default function ServerPaginatedTable<T extends AnyObject>({
   showSizeChanger = true,
   showQuickJumper = true,
   showTotal = (total, range) => `${range[0]} - ${range[1]} of ${total} items`,
+  showRefresh = true,
   ...props
 }: ServerPaginatedTableProps<T>) {
   const defaultSortCol = useMemo(
     () => columns?.find((col) => col.defaultSortOrder),
     [columns]
   );
+  const initialState = {
+    current: 1,
+    pageSize,
+    ...filters?.reduce(
+      (acc, filter) => ({ ...acc, [`filter.${filter.key}`]: "" }),
+      {}
+    ),
+    ["sort.field"]:
+      (defaultSortCol as any)?.dataIndex || defaultSortCol?.key || "",
+    ["sort.order"]: defaultSortCol?.defaultSortOrder || "",
+  };
   const [data, setData] = useState<T[]>([]);
   const [loading, setLoading] = useState(false);
-  const [tableParams, setTableParams] = useUrlState(
-    {
-      current: 1,
-      pageSize,
-      ...filters?.reduce(
-        (acc, filter) => ({ ...acc, [`filter.${filter.key}`]: "" }),
-        {}
-      ),
-      ["sort.field"]:
-        (defaultSortCol as any)?.dataIndex || defaultSortCol?.key || "",
-      ["sort.order"]: defaultSortCol?.defaultSortOrder || "",
-    },
-    {
-      parseOptions: { parseNumbers: true },
-    }
-  );
+  const [tableParams, setTableParams] = useUrlState(initialState, {
+    parseOptions: { parseNumbers: true },
+  });
   const [total, setTotal] = useState(0);
 
   const handleTableChange: ServerPaginatedTableProps<T>["onChange"] = (
@@ -224,6 +225,13 @@ export default function ServerPaginatedTable<T extends AnyObject>({
             onFiltersChange={onFiltersChange}
           />
         ) : null}
+        {showRefresh && (
+          <Tooltip title="Reload">
+            <Button onClick={fetchData}>
+              <ReloadOutlined />
+            </Button>
+          </Tooltip>
+        )}
       </div>
 
       <Table

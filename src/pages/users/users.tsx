@@ -11,6 +11,7 @@ import { kebabCaseToWords } from "@/lib/utils/string.utils";
 import { Role } from "@/modules/auth/hooks/role.hooks";
 import { userActions } from "@/modules/user/slices/user.slice";
 import { User } from "@/modules/user/types/user.types";
+import useUrlState from "@ahooksjs/use-url-state";
 import {
   CheckCircleFilled,
   DeleteOutlined,
@@ -20,6 +21,8 @@ import {
 import { Button, Space, Tag, Tooltip, Typography } from "antd";
 import React, { useRef } from "react";
 import UserAvatar from "./components/user-avatar";
+import EditUserModal from "./modals/edit-user-modal";
+import InviteUserModal from "./modals/invite-user-modal";
 
 interface Props {}
 
@@ -27,9 +30,32 @@ const Users: React.FC<Props> = () => {
   const { t } = useLang();
   const dispatch = useAppDispatch();
   const tableHelpers = useRef<GetHelpers<User>>();
+  const [{ action, user }, setUrlState] = useUrlState(undefined, {
+    navigateMode: "replace",
+  });
+
+  const onModalCancel = () => {
+    setUrlState({ action: undefined, user: undefined });
+  };
+
+  const onInviteSuccess = (user: User) => {
+    onModalCancel();
+    tableHelpers.current?.setData((data) => [user, ...data]);
+  };
+
+  const onEditSuccess = (user: User) => {
+    onModalCancel();
+    tableHelpers.current?.setData((data) =>
+      data.map((item) => (item.id === user.id ? { ...item, ...user } : item))
+    );
+  };
+
+  const onInvite = () => {
+    setUrlState({ action: "invite" });
+  };
 
   const onEdit = (user: User) => {
-    console.log("user: ", user);
+    setUrlState({ action: "edit", user: user.id });
   };
 
   const onDelete = (user: User) => {
@@ -59,6 +85,11 @@ const Users: React.FC<Props> = () => {
       <ServerPaginatedTable<User>
         url="users"
         getHelpers={(helpers) => (tableHelpers.current = helpers)}
+        optionsBar={
+          <Button type="primary" icon={<PlusOutlined />} onClick={onInvite}>
+            Invite
+          </Button>
+        }
         filters={[
           {
             label: "Search",
@@ -88,8 +119,10 @@ const Users: React.FC<Props> = () => {
           {
             title: "Creation Date",
             dataIndex: "created_at",
+            sorter: true,
+            defaultSortOrder: "descend",
             render: (_, record) => (
-              <Typography.Text className="text-textSecondary">
+              <Typography.Text>
                 {formattedDateTime(record.created_at)}
               </Typography.Text>
             ),
@@ -145,11 +178,18 @@ const Users: React.FC<Props> = () => {
           },
         ]}
       />
-      <div className="absolute top-0 right-[58px]">
-        <Button type="primary" icon={<PlusOutlined />}>
-          Invite
-        </Button>
-      </div>
+
+      <InviteUserModal
+        open={action === "invite"}
+        onCancel={onModalCancel}
+        onSuccess={onInviteSuccess}
+      />
+      <EditUserModal
+        open={action === "edit"}
+        userId={user}
+        onCancel={onModalCancel}
+        onSuccess={onEditSuccess}
+      />
     </div>
   );
 };

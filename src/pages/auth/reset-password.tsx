@@ -20,7 +20,7 @@ interface Props {}
 const ResetPassword: React.FC<Props> = () => {
   const dispatch = useAppDispatch();
   const loading = useIsLoading("auth", "resetPasswordStatus");
-  const [{ email, otp }] = useUrlState({ email: "", otp: "" });
+  const [{ email, otp }] = useUrlState();
   const navigate = useNavigate();
 
   const onFinish = (values: ResetPasswordForm) => {
@@ -75,6 +75,7 @@ const ResetPassword: React.FC<Props> = () => {
             Validations.requiredField("Password"),
             { validator: Validations.minLen(6) },
           ]}
+          validateFirst
         >
           <Input.Password
             prefix={<LockOutlined />}
@@ -96,6 +97,7 @@ const ResetPassword: React.FC<Props> = () => {
               },
             }),
           ]}
+          validateFirst
         >
           <Input.Password
             prefix={<LockOutlined />}

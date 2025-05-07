@@ -2,8 +2,9 @@ import Validations from "@/lib/utils/validations";
 import { useAuth } from "@/modules/auth/hooks/auth.hooks";
 import { AuthLoginBody } from "@/modules/auth/types/auth.types";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Typography } from "antd";
+import { Button, Form, Input } from "antd";
 import React from "react";
+import { Link } from "react-router-dom";
 
 interface Props {}
 
@@ -41,9 +42,9 @@ const Login: React.FC<Props> = () => {
         </Form.Item>
 
         <div className="flex justify-end">
-          <Typography.Link href="/forgot-password" className="text-xs">
+          <Link to="/forgot-password" className="text-xs">
             Forgot password?
-          </Typography.Link>
+          </Link>
         </div>
 
         <Form.Item className="mb-0 mt-5">

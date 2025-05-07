@@ -200,7 +200,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["FileCreate"];
+        post: operations["FileSave"];
         delete: operations["FileRemove"];
         options?: never;
         head?: never;
@@ -406,18 +406,25 @@ export interface components {
             data: components["schemas"]["SanitizedUser"] | null;
             error: string | null;
         };
-        PaginationResponse_SanitizedUser_: {
+        PaginationSortResponse_SanitizedUser_: {
             /** Format: double */
             total?: number;
             list: components["schemas"]["SanitizedUser"][];
         };
-        APIResponse_PaginationResponse_SanitizedUser__: {
-            data: components["schemas"]["PaginationResponse_SanitizedUser_"] | null;
+        APIResponse_PaginationSortResponse_SanitizedUser__: {
+            data: components["schemas"]["PaginationSortResponse_SanitizedUser_"] | null;
             error: string | null;
         };
         /** @enum {string} */
         Role: "user" | "admin" | "super-admin";
+        /** @enum {string} */
+        "SortFields_SanitizedUser.created_at-or-updated_at-or-name_": "created_at" | "updated_at" | "name";
+        UserSortFields: components["schemas"]["SortFields_SanitizedUser.created_at-or-updated_at-or-name_"];
+        /** @enum {string} */
+        SortOrder: "asc" | "desc";
         UserFetchList: {
+            sortOrder?: components["schemas"]["SortOrder"];
+            sortField?: components["schemas"]["UserSortFields"];
             /** Format: double */
             limit?: number;
             /** Format: double */
@@ -425,14 +432,14 @@ export interface components {
             search?: string;
             role?: components["schemas"]["Role"];
         };
-        "Expand_Optional_UserMutable.bio__": {
+        "Expand_Optional_UserMutable.bio-or-photo__": {
+            photo?: string;
             bio?: string;
             name: string;
             role: string;
             email: string;
-            photo: string;
         };
-        UserCreate: components["schemas"]["Expand_Optional_UserMutable.bio__"];
+        UserCreate: components["schemas"]["Expand_Optional_UserMutable.bio-or-photo__"];
         /** @description Make all properties in T optional */
         "Partial_Omit_UserMutable.email__": {
             name?: string;
@@ -459,16 +466,21 @@ export interface components {
             data: components["schemas"]["PostType"] | null;
             error: string | null;
         };
-        PaginationResponse_PostType_: {
+        PaginationSortResponse_PostType_: {
             /** Format: double */
             total?: number;
             list: components["schemas"]["PostType"][];
         };
-        APIResponse_PaginationResponse_PostType__: {
-            data: components["schemas"]["PaginationResponse_PostType_"] | null;
+        APIResponse_PaginationSortResponse_PostType__: {
+            data: components["schemas"]["PaginationSortResponse_PostType_"] | null;
             error: string | null;
         };
+        /** @enum {string} */
+        "SortFields_Post.created_at-or-updated_at-or-title-or-views_": "created_at" | "updated_at" | "title" | "views";
+        PostSortFields: components["schemas"]["SortFields_Post.created_at-or-updated_at-or-title-or-views_"];
         PostFetchList: {
+            sortOrder?: components["schemas"]["SortOrder"];
+            sortField?: components["schemas"]["PostSortFields"];
             /** Format: double */
             limit?: number;
             /** Format: double */
@@ -577,16 +589,21 @@ export interface components {
             event: string;
         };
         Notification: components["schemas"]["Expand_Prisma.notificationsCreateManyInput-and-_metadata_63_-GenericObject__"];
-        PaginationResponse_Notification_: {
+        PaginationSortResponse_Notification_: {
             /** Format: double */
             total?: number;
             list: components["schemas"]["Notification"][];
         };
-        APIResponse_PaginationResponse_Notification__: {
-            data: components["schemas"]["PaginationResponse_Notification_"] | null;
+        APIResponse_PaginationSortResponse_Notification__: {
+            data: components["schemas"]["PaginationSortResponse_Notification_"] | null;
             error: string | null;
         };
+        /** @enum {string} */
+        "SortFields_Notification.created_at_": "created_at";
+        NotificationSortFields: components["schemas"]["SortFields_Notification.created_at_"];
         NotificationFetchList: {
+            sortOrder?: components["schemas"]["SortOrder"];
+            sortField?: components["schemas"]["NotificationSortFields"];
             /** Format: double */
             limit?: number;
             /** Format: double */
@@ -744,6 +761,8 @@ export interface operations {
     UserFetchList: {
         parameters: {
             query?: {
+                sortOrder?: components["schemas"]["SortOrder"];
+                sortField?: components["schemas"]["UserSortFields"];
                 limit?: number;
                 page?: number;
                 search?: string;
@@ -761,7 +780,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["APIResponse_PaginationResponse_SanitizedUser__"];
+                    "application/json": components["schemas"]["APIResponse_PaginationSortResponse_SanitizedUser__"];
                 };
             };
         };
@@ -934,6 +953,8 @@ export interface operations {
     PostFetchList: {
         parameters: {
             query?: {
+                sortOrder?: components["schemas"]["SortOrder"];
+                sortField?: components["schemas"]["PostSortFields"];
                 limit?: number;
                 page?: number;
                 search?: string;
@@ -953,7 +974,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["APIResponse_PaginationResponse_PostType__"];
+                    "application/json": components["schemas"]["APIResponse_PaginationSortResponse_PostType__"];
                 };
             };
         };
@@ -1035,6 +1056,8 @@ export interface operations {
     NotificationFetchList: {
         parameters: {
             query?: {
+                sortOrder?: components["schemas"]["SortOrder"];
+                sortField?: components["schemas"]["NotificationSortFields"];
                 limit?: number;
                 page?: number;
             };
@@ -1050,7 +1073,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["APIResponse_PaginationResponse_Notification__"];
+                    "application/json": components["schemas"]["APIResponse_PaginationSortResponse_Notification__"];
                 };
             };
         };
@@ -1137,7 +1160,7 @@ export interface operations {
             };
         };
     };
-    FileCreate: {
+    FileSave: {
         parameters: {
             query?: never;
             header?: never;

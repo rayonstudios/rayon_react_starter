@@ -24,7 +24,7 @@ const Posts: React.FC<Props> = () => {
             title: "Date",
             dataIndex: "created_at",
             render: (_, record) => (
-              <Typography.Text className="text-textSecondary">
+              <Typography.Text>
                 {formattedDateTime(record.created_at)}
               </Typography.Text>
             ),

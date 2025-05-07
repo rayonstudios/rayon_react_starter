@@ -4,4 +4,5 @@ import { ApiBody, ApiResponse } from "@/lib/types/api";
 export type User = ApiResponse<"UserFetch">;
 
 // Request types
+export type UserCreateBody = ApiBody<"UserCreate">;
 export type UserUpdateBody = ApiBody<"UserUpdate">;

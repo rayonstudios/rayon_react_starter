@@ -7,12 +7,20 @@ export const name = "user";
 
 //initial state
 const initialState: {
+  fetchStatus: ThunkStatus;
+  createStatus: ThunkStatus;
   updateStatus: ThunkStatus;
   removeStatus: ThunkStatus;
 } = {
+  fetchStatus: ThunkStatus.IDLE,
+  createStatus: ThunkStatus.IDLE,
   updateStatus: ThunkStatus.IDLE,
   removeStatus: ThunkStatus.IDLE,
 };
+
+const fetch = createAsyncThunk(`${name}/fetch`, userService.fetch);
+
+const create = createAsyncThunk(`${name}/create`, userService.create);
 
 const update = createAsyncThunk(
   `${name}/update`,
@@ -30,4 +38,10 @@ export const userSlice = createSlice({
 });
 
 //action creators
-export const userActions = { ...userSlice.actions, update, remove };
+export const userActions = {
+  ...userSlice.actions,
+  fetch,
+  create,
+  update,
+  remove,
+};

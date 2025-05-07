@@ -1,5 +1,7 @@
 import { authSlice } from "@/modules/auth/slices/auth.slice";
 import { profileSlice } from "@/modules/auth/slices/profile.slice";
+import { fileSlice } from "@/modules/file/slices/file.slice";
+import { userSlice } from "@/modules/user/slices/user.slice";
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { statusHandlerEnahncer } from "./enhancers/status.enhancer";
@@ -10,6 +12,8 @@ export const store = configureStore({
   reducer: {
     auth: authSlice.reducer,
     profile: profileSlice.reducer,
+    user: userSlice.reducer,
+    file: fileSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }).concat(

@@ -7,6 +7,7 @@ import { AuthForgotPasswordBody } from "@/modules/auth/types/auth.types";
 import { MailOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Typography } from "antd";
 import React, { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 interface Props {}
 
@@ -63,9 +64,9 @@ const ForgotPassword: React.FC<Props> = () => {
         </Form.Item>
 
         <div className="flex justify-end">
-          <Typography.Link href="/login" className="text-xs">
+          <Link to="/login" className="text-xs">
             Back to login
-          </Typography.Link>
+          </Link>
         </div>
 
         <Form.Item className="mb-0 mt-5">
