@@ -1,8 +1,17 @@
-import { Role } from "@/modules/auth/types/profile.type";
+import { Role } from "@/modules/auth/hooks/role.hooks";
 import NotFound from "@/pages/404/404";
+import ForgotPassword from "@/pages/auth/forgot-password";
 import Login from "@/pages/auth/login";
-import Home from "@/pages/home/home";
-import { DashboardOutlined } from "@ant-design/icons";
+import ResetPassword from "@/pages/auth/reset-password";
+import Posts from "@/pages/posts/posts";
+import SamplePage from "@/pages/sample-page/sample-page";
+import Settings from "@/pages/settings/settings";
+import Users from "@/pages/users/users";
+import {
+  BookOutlined,
+  DashboardOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../redux/store";
@@ -32,49 +41,74 @@ export const useRouterConfig = (): RouterConfig[] => {
     {
       layoutType: "dashboard",
       authType: "private",
-      component: <Home />,
+      component: <Posts />,
       menuItem: {
-        title: t("sidebar:home"),
-        icon: <DashboardOutlined />,
+        title: t("sidebar:posts"),
+        icon: <BookOutlined />,
       },
       route: {
         path: "/",
+      },
+    },
+    {
+      layoutType: "dashboard",
+      authType: "private",
+      component: <Users />,
+      menuItem: {
+        title: t("sidebar:users"),
+        icon: <UserOutlined />,
+      },
+      route: {
+        path: "/users",
+      },
+      allowedRoles: [Role.SUPER_ADMIN],
+    },
+    {
+      layoutType: "dashboard",
+      authType: "private",
+      component: <SamplePage title="Parent" />,
+      menuItem: {
+        title: "Parent",
+        icon: <DashboardOutlined />,
+      },
+      route: {
+        path: "/parent",
       },
       subRoutes: [
         {
           layoutType: "dashboard",
           authType: "private",
-          component: <Home />,
+          component: <SamplePage title="Child 1" />,
           menuItem: {
-            title: "Home 2",
+            title: "Child 1",
             icon: <DashboardOutlined />,
           },
           route: {
-            path: "home-2",
+            path: "child-1",
           },
         },
         {
           layoutType: "dashboard",
           authType: "private",
-          component: <Home />,
+          component: <SamplePage title="Child 2" />,
           menuItem: {
-            title: "Home 3",
+            title: "Child 2",
             icon: <DashboardOutlined />,
           },
           route: {
-            path: "home-3",
+            path: "child-2",
           },
           subRoutes: [
             {
               layoutType: "dashboard",
               authType: "private",
-              component: <Home />,
+              component: <SamplePage title="Grand Child" />,
               menuItem: {
-                title: "Home 3.1",
+                title: "Grand Child",
                 icon: <DashboardOutlined />,
               },
               route: {
-                path: "home-3.1",
+                path: "grand-child",
               },
             },
           ],
@@ -84,26 +118,9 @@ export const useRouterConfig = (): RouterConfig[] => {
     {
       layoutType: "dashboard",
       authType: "private",
-      component: <Home />,
-      menuItem: {
-        title: "Page 2",
-        icon: <DashboardOutlined />,
-      },
+      component: <Settings />,
       route: {
-        path: "/page-2",
-      },
-    },
-    {
-      layoutType: "dashboard",
-      authType: "private",
-      component: <Home />,
-      allowedRoles: [Role.ADMIN],
-      menuItem: {
-        title: "Admin Only Page",
-        icon: <DashboardOutlined />,
-      },
-      route: {
-        path: "/admin-only",
+        path: "/settings",
       },
     },
     {
@@ -112,6 +129,22 @@ export const useRouterConfig = (): RouterConfig[] => {
       component: <Login />,
       route: {
         path: "/login",
+      },
+    },
+    {
+      layoutType: "auth",
+      authType: "public",
+      component: <ForgotPassword />,
+      route: {
+        path: "/forgot-password",
+      },
+    },
+    {
+      layoutType: "auth",
+      authType: "public",
+      component: <ResetPassword />,
+      route: {
+        path: "/reset-password",
       },
     },
     {

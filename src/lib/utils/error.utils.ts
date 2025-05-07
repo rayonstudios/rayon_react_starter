@@ -22,3 +22,5 @@ export const globalErrorHandler = (error: any) => {
   console.error(errorMsg, error);
   message.error(errorMsg);
 };
+
+export const suppressError = () => {};

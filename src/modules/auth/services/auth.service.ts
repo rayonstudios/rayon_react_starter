@@ -1,27 +1,56 @@
-import { fakeApi } from "@/lib/utils/misc.utils";
+import apiClient, { withApiResponseHandling } from "@/lib/openapi-fetch.config";
+import {
+  AuthChangePasswordBody,
+  AuthForgotPasswordBody,
+  AuthLoginBody,
+  AuthResetPasswordBody,
+} from "../types/auth.types";
 
-async function login({ email }: { email: string; password: string }) {
-  return fakeApi(() => ({
-    accessToken: email.toLowerCase(),
-    refreshToken: "refreshToken",
-  })) as Promise<{ accessToken: string; refreshToken: string }>;
+async function login(payload: AuthLoginBody) {
+  const { data } = await withApiResponseHandling(
+    apiClient.POST("/auth/login", { body: payload })
+  );
+  return data;
 }
 
-async function logout() {
-  return fakeApi(() => true) as Promise<boolean>;
+async function refreshToken(refreshToken: string) {
+  const { data } = await withApiResponseHandling(
+    apiClient.POST("/auth/refresh", {
+      headers: {
+        authorization: `Bearer ${refreshToken}`,
+      },
+    })
+  );
+  return data;
 }
 
-async function refreshToken() {
-  return fakeApi(() => ({
-    accessToken: "accessToken",
-    refreshToken: "refreshToken",
-  })) as Promise<{ accessToken: string; refreshToken: string }>;
+async function changePassword(payload: AuthChangePasswordBody) {
+  const { data: response } = await withApiResponseHandling(
+    apiClient.POST("/auth/change-password", { body: payload })
+  );
+  return response;
+}
+
+async function forgotPassword(payload: AuthForgotPasswordBody) {
+  const { data: response } = await withApiResponseHandling(
+    apiClient.POST("/auth/forgot-password", { body: payload })
+  );
+  return response;
+}
+
+async function resetPassword(payload: AuthResetPasswordBody) {
+  const { data: response } = await withApiResponseHandling(
+    apiClient.POST("/auth/reset-password", { body: payload })
+  );
+  return response;
 }
 
 const authService = {
   login,
-  logout,
   refreshToken,
+  changePassword,
+  forgotPassword,
+  resetPassword,
 };
 
 export default authService;

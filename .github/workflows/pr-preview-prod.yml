@@ -1,0 +1,23 @@
+name: Preview deploy to Firebase Hosting on PR (main)
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build_and_preview:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - run: yarn install --frozen-lockfile && npm run build:prod
+        env:
+          CI: false
+
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.SECRETJSON_PROD }}"
+          projectId: rayon-gcp-starter
+          target: prod

@@ -9,11 +9,17 @@
   },
 
   "sidebar": {
-    "home": "Home"
+    "home": "Home",
+    "users": "Users",
+    "posts": "Posts"
   },
 
   "logout": {
     "title": "Logout",
     "message": "Are you sure you want to logout?"
+  },
+
+  "settings": {
+    "title": "Settings"
   }
 }

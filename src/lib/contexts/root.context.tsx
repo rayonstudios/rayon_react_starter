@@ -62,7 +62,7 @@ const translations = {
   },
 };
 
-const fallbackLng = Object.values(Lang)[0];
+const fallbackLng = Object.values(Lang)[0]!;
 const initialLang = (localStorage.getItem(langKey) || fallbackLng) as Lang;
 
 i18n.use(initReactI18next).init({

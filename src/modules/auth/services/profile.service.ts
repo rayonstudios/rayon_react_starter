@@ -1,22 +1,25 @@
-import { fakeApi } from "@/lib/utils/misc.utils";
-import { Profile } from "../types/profile.type";
+import apiClient, { withApiResponseHandling } from "@/lib/openapi-fetch.config";
+import { objectToFormData } from "@/lib/utils/misc.utils";
+import { ProfileUpdateBody } from "../types/profile.types";
 
 async function fetch() {
-  const email = localStorage.getItem("accessToken");
-  return fakeApi(
-    () => ({
-      id: "1",
-      name: "John Doe",
-      email,
-      role: email?.includes("admin") ? "admin" : "user",
-      picture: "https://via.placeholder.com/150",
-    }),
-    { errorRate: 0 }
-  ) as Promise<Profile>;
+  const { data } = await withApiResponseHandling(apiClient.GET("/profile"));
+  return data;
+}
+
+async function update(payload: ProfileUpdateBody) {
+  const { data } = await withApiResponseHandling(
+    apiClient.PATCH("/profile", {
+      body: payload,
+      bodySerializer: objectToFormData,
+    })
+  );
+  return data;
 }
 
 const profileService = {
   fetch,
+  update,
 };
 
 export default profileService;

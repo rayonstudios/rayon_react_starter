@@ -33,13 +33,13 @@ function getValidator(
 
 const Validations = {
   email: getValidator(isValidEmail, "Email is invalid"),
-  min_len: (len: number) => (_: any, str: string) =>
+  minLen: (len: number) => (_: any, str: string) =>
     getValidator(isValidMinLength, `Minimum ${len} characters are required`)(
       undefined,
       str,
       len
     ),
-  max_len: (len: number) => (_: any, str: string) =>
+  maxLen: (len: number) => (_: any, str: string) =>
     getValidator(isValidMaxLength, `Maximum ${len} characters are allowed`)(
       undefined,
       str,
@@ -47,14 +47,10 @@ const Validations = {
     ),
   name: getValidator(isValidName, "Please enter a valid name"),
   phone: getValidator(isValidPhone, "Phone number is invalid"),
-  reqd_msg: (field: string) => `${field} is required`,
-};
-
-export const requiredRule = (name: string) => {
-  return {
+  requiredField: (name: string = "This field") => ({
     required: true,
-    message: Validations.reqd_msg(name),
-  };
+    message: `${name} is required`,
+  }),
 };
 
 export default Validations;

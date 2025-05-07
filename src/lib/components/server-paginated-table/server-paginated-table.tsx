@@ -2,12 +2,14 @@ import axios from "@/lib/axios.config";
 import { GenericObject } from "@/lib/types/misc";
 import { isNullish } from "@/lib/utils/misc.utils";
 import useUrlState from "@ahooksjs/use-url-state";
+import { ReloadOutlined } from "@ant-design/icons";
 import { useDeepCompareEffect, useUpdateEffect } from "ahooks";
-import { Table, TableProps } from "antd";
+import { Button, Table, TableProps, Tooltip } from "antd";
 import { AnyObject } from "antd/es/_util/type";
+import { ColumnsType } from "antd/es/table";
 import { capitalize, pickBy } from "lodash";
 import qs from "qs";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import FiltersButton from "./filters-button";
 
 function generateColsFromData<T>(data: T[] = []) {
@@ -26,16 +28,16 @@ function generateColsFromData<T>(data: T[] = []) {
         typeof item === "string" ? item : JSON.stringify(item),
     });
   }
-  return cols;
+  return cols as ColumnsType<T>;
 }
 
 export type GetHelpers<T> = {
   data: T[];
-  fetchData: Function;
-  setData: Function;
-  setLoading: Function;
-  setTableParams: Function;
-  setTotal: Function;
+  fetchData: () => void;
+  setData: React.Dispatch<React.SetStateAction<T[]>>;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setTableParams: (params: GenericObject) => void;
+  setTotal: React.Dispatch<React.SetStateAction<number>>;
 };
 
 export type ServerPaginatedTableProps<T> = TableProps<T> & {
@@ -50,11 +52,12 @@ export type ServerPaginatedTableProps<T> = TableProps<T> & {
   showSizeChanger?: boolean;
   showQuickJumper?: boolean;
   showTotal?: (total: number, range: [number, number]) => string;
+  showRefresh?: boolean;
 };
 
 export default function ServerPaginatedTable<T extends AnyObject>({
   url,
-  pageSize = 20,
+  pageSize = 10,
   dataSource,
   onDocsChange,
   columns,
@@ -65,30 +68,57 @@ export default function ServerPaginatedTable<T extends AnyObject>({
   showSizeChanger = true,
   showQuickJumper = true,
   showTotal = (total, range) => `${range[0]} - ${range[1]} of ${total} items`,
+  showRefresh = true,
   ...props
 }: ServerPaginatedTableProps<T>) {
+  const defaultSortCol = useMemo(
+    () => columns?.find((col) => col.defaultSortOrder),
+    [columns]
+  );
+  const defaultSortField =
+    (defaultSortCol as any)?.dataIndex || defaultSortCol?.key || "";
+  const initialState = {
+    current: 1,
+    pageSize,
+    ...filters?.reduce(
+      (acc, filter) => ({ ...acc, [`filter.${filter.key}`]: "" }),
+      {}
+    ),
+    ["sort.field"]: defaultSortField,
+    ["sort.order"]: defaultSortCol?.defaultSortOrder || "",
+  };
   const [data, setData] = useState<T[]>([]);
   const [loading, setLoading] = useState(false);
-  const [tableParams, setTableParams] = useUrlState(
-    {
-      current: 1,
-      pageSize,
-      ...filters?.reduce(
-        (acc, filter) => ({ ...acc, [`filter.${filter.key}`]: "" }),
-        {}
-      ),
-    },
-    { parseOptions: { parseNumbers: true } }
-  );
+  const [tableParams, setTableParams] = useUrlState(initialState, {
+    parseOptions: { parseNumbers: true },
+  });
   const [total, setTotal] = useState(0);
 
-  const handleTableChange: ServerPaginatedTableProps<T>["onChange"] = (val) => {
+  const handleTableChange: ServerPaginatedTableProps<T>["onChange"] = (
+    pagination,
+    _,
+    sorters
+  ) => {
+    const sortObj = (Array.isArray(sorters) ? sorters[0] : sorters) || {};
+
+    // if sorter is removed from a non-default column, set it to default
+    if (
+      defaultSortField &&
+      sortObj.field !== defaultSortField &&
+      !sortObj.order
+    ) {
+      sortObj.field = defaultSortField;
+      sortObj.order = defaultSortCol?.defaultSortOrder;
+    }
+
     setTableParams({
       ...tableParams,
-      current: val.current,
-      pageSize: val.pageSize,
+      ["sort.field"]: sortObj?.field || "",
+      ["sort.order"]: sortObj?.order || "",
+      current: pagination.current,
+      pageSize: pagination.pageSize,
     });
-    if (tableParams.pageSize !== val?.pageSize) {
+    if (tableParams.pageSize !== pagination?.pageSize) {
       setData([]);
     }
   };
@@ -111,7 +141,9 @@ export default function ServerPaginatedTable<T extends AnyObject>({
     pickBy(
       tableParams,
       (_, key) =>
-        ["current", "pageSize"].includes(key) || key.startsWith("filter.")
+        ["current", "pageSize"].includes(key) ||
+        key.startsWith("filter.") ||
+        key.startsWith("sort.")
     ),
   ]);
 
@@ -126,18 +158,25 @@ export default function ServerPaginatedTable<T extends AnyObject>({
     const [_url, _query = ""] = url.split("?");
 
     const query: GenericObject = qs.parse(_query);
+    // pagination
     if (pageSize) {
-      query.per_page = pageSize;
-      query.page = current - 1;
+      query.limit = pageSize;
+      query.page = current;
     }
+    // filters
     Object.entries(restParams).forEach(([key, value]) => {
       if (!key.startsWith("filter.")) return;
-      if (!isNullish(value)) query[key.split("filter.")[1]] = value;
+      if (!isNullish(value)) query[key.split("filter.")[1]!] = value;
     });
+    // sorting
+    if (restParams["sort.field"] && !isNullish(restParams["sort.order"])) {
+      query.sortField = restParams["sort.field"];
+      query.sortOrder = restParams["sort.order"] === "ascend" ? "asc" : "desc";
+    }
 
     axios
       .get(`${_url}?${qs.stringify(query)}`)
-      .then(({ data }) => {
+      .then(({ data: { data } }) => {
         const list = (
           Array.isArray(data)
             ? data
@@ -146,9 +185,7 @@ export default function ServerPaginatedTable<T extends AnyObject>({
 
         setData(
           list.map((item, ix: number) => {
-            // @ts-ignore
-            item.key = item.id ?? ix.toString();
-            return item;
+            return { ...item, key: item.id ?? ix.toString() };
           })
         );
 
@@ -170,6 +207,20 @@ export default function ServerPaginatedTable<T extends AnyObject>({
       });
   }, [data, fetchData, setData, setLoading, setTableParams, setTotal]);
 
+  const cols = useMemo(() => {
+    const colsList = Array.isArray(columns)
+      ? columns
+      : generateColsFromData(data);
+    return colsList.map((col) => ({
+      ...col,
+      sortOrder:
+        col.sorter &&
+        tableParams["sort.field"] === ((col as any).dataIndex || col.key)
+          ? tableParams["sort.order"] || undefined
+          : col.defaultSortOrder,
+    }));
+  }, [columns, data]);
+
   return (
     <div className="relative">
       <div className="absolute flex flex-row items-center gap-x-3 -translate-y-full -top-6 right-0 z-10">
@@ -186,14 +237,21 @@ export default function ServerPaginatedTable<T extends AnyObject>({
             onFiltersChange={onFiltersChange}
           />
         ) : null}
+        {showRefresh && (
+          <Tooltip title="Reload">
+            <Button onClick={fetchData}>
+              <ReloadOutlined />
+            </Button>
+          </Tooltip>
+        )}
       </div>
+
       <Table
         scroll={{ x: "max-content" }}
         onChange={handleTableChange}
         dataSource={typeof dataSource === "function" ? dataSource(data) : data}
         loading={loading}
-        //@ts-ignore
-        columns={Array.isArray(columns) ? columns : generateColsFromData(data)}
+        columns={cols}
         style={style}
         pagination={{
           total,
