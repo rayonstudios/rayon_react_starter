@@ -1,7 +1,7 @@
 {
   "name": "rayon_react_starter",
   "private": true,
-  "version": "2.0",
+  "version": "2.1",
   "description": "Rayon React Starter is an opinionated starter kit designed to scaffold React projects quickly with a comprehensive and well-structured environment. Built with a modern tech stack and batteries included, it helps you start building your project in no time.",
   "type": "module",
   "scripts": {
@@ -20,6 +20,7 @@
     "@ahooksjs/use-url-state": "^3.5.1",
     "@ant-design/colors": "^7.0.2",
     "@ant-design/icons": "^5.2.6",
+    "@hcaptcha/react-hcaptcha": "^1.12.0",
     "@reduxjs/toolkit": "^2.1.0",
     "@types/lodash": "^4.17.0",
     "@types/qs": "^6.9.16",

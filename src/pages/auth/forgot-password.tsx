@@ -1,3 +1,4 @@
+import Captcha from "@/lib/components/captcha/captcha";
 import { useIsLoading } from "@/lib/redux/enhancers/status.enhancer";
 import { useAppDispatch } from "@/lib/redux/store";
 import { suppressError } from "@/lib/utils/error.utils";
@@ -69,7 +70,11 @@ const ForgotPassword: React.FC<Props> = () => {
           </Link>
         </div>
 
-        <Form.Item className="mb-0 mt-5">
+        <Form.Item name="hcaptcha_token" className="mt-5">
+          <Captcha />
+        </Form.Item>
+
+        <Form.Item className="mb-0">
           <Button
             className="w-full"
             loading={loading}
