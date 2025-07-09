@@ -57,7 +57,23 @@ export default function ImagePicker({
   );
 
   useUpdateEffect(() => {
-    onChange && onChange(images.filter(isImage).map((img) => img.src));
+    onChange &&
+      onChange(
+        images
+          .filter(
+            (img) =>
+              (img instanceof File && img.type?.startsWith("image/")) ||
+              (img && typeof img.type === "string" && img.type.startsWith("image/"))
+          )
+          .map((img) => {
+            if (img instanceof File) {
+              return img; // Pass the File object directly
+            }
+            // For existing images (objects like { src: "url", type: "image/" })
+            return img && img.src ? img.src : undefined;
+          })
+          .filter((item) => item !== undefined) as (File | string)[]
+      );
   }, [images]);
 
   useEffect(() => {
@@ -74,9 +90,15 @@ export default function ImagePicker({
       i = 0;
     while (count < newImages.length && i < files.length) {
       const ix = (start + count) % newImages.length;
-      if (!isImage(newImages[ix])) {
+      const currentImg = newImages[ix];
+      const isCurrentImgValid =
+        (currentImg instanceof File && currentImg.type?.startsWith("image/")) ||
+        (currentImg &&
+          typeof (currentImg as any).type === "string" &&
+          (currentImg as any).type.startsWith("image/"));
+      if (!isCurrentImgValid) {
         newImages[ix] = files[i];
-        newImages[ix].src = URL.createObjectURL(files[i]!);
+        (newImages[ix] as any).src = URL.createObjectURL(files[i]!);
         i++;
       }
       count++;
@@ -97,7 +119,9 @@ export default function ImagePicker({
       }}
       dataSource={images}
       renderItem={(img, i) => {
-        const isImageValid = isImage(img as any);
+        const isImageValid =
+          (img instanceof File && img.type?.startsWith("image/")) ||
+          (img && typeof (img as any).type === "string" && (img as any).type.startsWith("image/"));
         return (
           <List.Item
             style={{
