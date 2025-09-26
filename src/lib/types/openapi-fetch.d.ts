@@ -599,11 +599,10 @@ export interface components {
             error: string | null;
         };
         /** @enum {string} */
-        "SortFields_Notification.created_at_": "created_at";
-        NotificationSortFields: components["schemas"]["SortFields_Notification.created_at_"];
+        DefaultSortFields: "created_at" | "updated_at";
         NotificationFetchList: {
             sortOrder?: components["schemas"]["SortOrder"];
-            sortField?: components["schemas"]["NotificationSortFields"];
+            sortField?: components["schemas"]["DefaultSortFields"];
             /** Format: double */
             limit?: number;
             /** Format: double */
@@ -1057,7 +1056,7 @@ export interface operations {
         parameters: {
             query?: {
                 sortOrder?: components["schemas"]["SortOrder"];
-                sortField?: components["schemas"]["NotificationSortFields"];
+                sortField?: components["schemas"]["DefaultSortFields"];
                 limit?: number;
                 page?: number;
             };
