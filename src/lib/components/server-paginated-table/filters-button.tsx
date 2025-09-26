@@ -3,10 +3,15 @@ import { FilterOutlined } from "@ant-design/icons";
 import { useDeepCompareLayoutEffect } from "ahooks";
 import { Button, DatePicker, Form, Input, Select, Switch, Tooltip } from "antd";
 import { useForm } from "antd/lib/form/Form";
+import dayjs from "dayjs";
+import localeData from "dayjs/plugin/localeData";
+import weekday from "dayjs/plugin/weekday";
 import { useState } from "react";
 import CustomModal from "../custom-modal/custom-modal";
 import ServerPaginatedSelect from "../server-paginated-select/server-paginated-select";
 
+dayjs.extend(weekday);
+dayjs.extend(localeData);
 type Filter = {
   label: string;
   key: string;
@@ -46,8 +51,19 @@ function RenderFilter({ filter, value, onChange }: RenderFilterProps) {
         <DatePicker
           {...filter.filterProps}
           allowClear
-          onChange={onChange}
-          value={value}
+          format="DD-MM-YYYY"
+          onChange={(date) => {
+            // If a date is selected, set time to 00:00:00 for start_date and 23:59:59 for end_date
+            if (!date) return onChange?.(null);
+            if (filter.key === "start_date") {
+              onChange?.(date.startOf("day"));
+            } else if (filter.key === "end_date") {
+              onChange?.(date.endOf("day"));
+            } else {
+              onChange?.(date);
+            }
+          }}
+          value={value ? dayjs(value) : null}
         />
       );
     case "boolean":
