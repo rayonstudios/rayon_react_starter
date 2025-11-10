@@ -11,6 +11,9 @@
       "hosting": {
         "dev": [
           "rayon-gcp-starter"
+        ],
+        "prod": [
+          "rayon-gcp-starter"
         ]
       }
     }
