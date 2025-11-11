@@ -3,12 +3,14 @@ import NotFound from "@/pages/404/404";
 import ForgotPassword from "@/pages/auth/forgot-password";
 import Login from "@/pages/auth/login";
 import ResetPassword from "@/pages/auth/reset-password";
+import ErrorBoundaryTestPage from "@/pages/error-boundary-test/error-boundary-test";
 import Posts from "@/pages/posts/posts";
 import SamplePage from "@/pages/sample-page/sample-page";
 import Settings from "@/pages/settings/settings";
 import Users from "@/pages/users/users";
 import {
   BookOutlined,
+  BugOutlined,
   DashboardOutlined,
   UserOutlined,
 } from "@ant-design/icons";
@@ -37,7 +39,7 @@ export const useRouterConfig = (): RouterConfig[] => {
   const { t } = useTranslation();
   const authStatus = useAppSelector((state) => state.auth.status);
 
-  return [
+  const routes: RouterConfig[] = [
     {
       layoutType: "dashboard",
       authType: "private",
@@ -156,4 +158,22 @@ export const useRouterConfig = (): RouterConfig[] => {
       },
     },
   ];
+
+  // Add error boundary test page only in development
+  if (process.env.NODE_ENV === "development") {
+    routes.splice(-1, 0, {
+      layoutType: "dashboard",
+      authType: "private",
+      component: <ErrorBoundaryTestPage />,
+      menuItem: {
+        title: "Error Boundary Test",
+        icon: <BugOutlined />,
+      },
+      route: {
+        path: "/error-boundary-test",
+      },
+    });
+  }
+
+  return routes;
 };

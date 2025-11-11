@@ -5,7 +5,15 @@
 
   "common": {
     "ok": "yes",
-    "cancel": "cancel"
+    "cancel": "cancel",
+    "tryAgain": "Try Again",
+    "reloadPage": "Reload Page"
+  },
+
+  "errorBoundary": {
+    "title": "Oops! Something went wrong",
+    "subtitle": "We encountered an unexpected error. Please try refreshing the page or contact support if the problem persists.",
+    "errorDetails": "Error Details (Development)"
   },
 
   "sidebar": {
