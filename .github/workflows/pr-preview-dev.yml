@@ -18,6 +18,6 @@ jobs:
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.SECRETJSON_DEV }}"
+          firebaseServiceAccount: "${{ secrets.GCP_SA }}"
           projectId: rayon-gcp-starter
           target: dev
