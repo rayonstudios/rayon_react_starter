@@ -4,7 +4,9 @@ import { useLang } from "@/lib/contexts/root.context";
 import { getColorFromStr } from "@/lib/utils/colors";
 import { formattedDateTime } from "@/lib/utils/dateTime.utils";
 import { Post } from "@/modules/posts/post.types";
+import { User } from "@/modules/user/types/user.types";
 import { Tag, Typography } from "antd";
+import dayjs from "dayjs";
 import React from "react";
 import UserAvatar from "../users/components/user-avatar";
 
@@ -18,6 +20,48 @@ const Posts: React.FC<Props> = () => {
       <PageHeading>{t("sidebar:posts")}</PageHeading>
       <ServerPaginatedTable<Post>
         url="posts?populate=true"
+        filters={[
+          {
+            label: "Search",
+            type: "search",
+            key: "search",
+            filterProps: {
+              placeholder: "Search by post's title, body or author name",
+            },
+          },
+          {
+            label: "Author",
+            key: "author_id",
+            type: "server-select",
+            filterProps: {
+              url: "/users",
+              renderItem: (user: User) => ({
+                node: <span>{user.name}</span>,
+              }),
+              valueResolver: (user: User) => user.id!,
+            },
+          },
+          {
+            label: "Created after",
+            type: "date",
+            key: "initial_created_at",
+            filterProps: {
+              placeholder: "Select initial creation date",
+              className: "w-full",
+            },
+          },
+          {
+            label: "Created before",
+            type: "date",
+            key: "final_created_at",
+            filterProps: {
+              placeholder: "Select final creation date",
+              className: "w-full",
+            },
+            valueResolver: (date?: dayjs.Dayjs) =>
+              date ? dayjs(date).endOf("day") : null,
+          },
+        ]}
         columns={[
           {
             title: "Title",
