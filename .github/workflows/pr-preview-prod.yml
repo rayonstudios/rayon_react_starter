@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: yarn install --frozen-lockfile && npm run build:prod
+      - run: npm ci && npm run build:prod
         env:
           CI: false
 

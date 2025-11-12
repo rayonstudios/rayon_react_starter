@@ -79,22 +79,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/notifications/webhooks/handle-trigger": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["NotificationHandleTrigger"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/notifications/general": {
         parameters: {
             query?: never;
@@ -207,7 +191,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/files/webhooks/handle-img-resize": {
+    "/bg-jobs/handler": {
         parameters: {
             query?: never;
             header?: never;
@@ -216,7 +200,23 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["FileHandleImageResize"];
+        post: operations["HandleBgJob"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/bg-jobs/{taskId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetBgJob"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -386,15 +386,15 @@ export interface components {
         /** @description From T, pick a set of properties whose keys are in the union K */
         "Pick_User.Exclude_keyofUser.password_hash-or-refresh_token_version__": {
             name: string;
+            email: string;
+            bio?: string;
             created_at?: string | (Date | undefined);
             updated_at?: string | (Date | undefined);
             id?: string;
             role?: string;
             email_verified?: boolean;
-            email: string;
             photo?: string;
             fcm_tokens?: string[];
-            bio?: string;
             /** Format: double */
             unread_noti_count?: number;
             photo_sizes?: components["schemas"]["JsonValue"];
@@ -433,19 +433,19 @@ export interface components {
             role?: components["schemas"]["Role"];
         };
         "Expand_Optional_UserMutable.bio-or-photo__": {
-            photo?: string;
             bio?: string;
+            photo?: string;
             name: string;
-            role: string;
             email: string;
+            role: string;
         };
         UserCreate: components["schemas"]["Expand_Optional_UserMutable.bio-or-photo__"];
         /** @description Make all properties in T optional */
         "Partial_Omit_UserMutable.email__": {
             name?: string;
+            bio?: string;
             role?: string;
             photo?: string;
-            bio?: string;
         };
         UserUpdate: components["schemas"]["Partial_Omit_UserMutable.email__"];
         "Expand_PostUnlinked-and-_author-SanitizedUser__": {
@@ -510,8 +510,6 @@ export interface components {
             data: components["schemas"]["Message"] | null;
             error: string | null;
         };
-        /** @enum {string} */
-        "NotificationEvent.GENERAL": "general";
         /** @description Type of `Prisma.DbNull`.
          *
          *     You cannot use other instances of this class. Please use the `Prisma.DbNull` value. */
@@ -546,47 +544,24 @@ export interface components {
         GenericObject: components["schemas"]["Record_string.any_"];
         "Expand_Omit_NotificationMutable.event_-and-_roles_63_-Role-Array--userIds_63_-string-Array--metadata_63_-GenericObject__": {
             title: string;
-            body: string;
-            image?: string;
             link?: string;
             metadata?: ((components["schemas"]["Prisma.NullableJsonNullValueInput"] | components["schemas"]["InputJsonValue"]) & components["schemas"]["GenericObject"]) & components["schemas"]["GenericObject"];
+            body: string;
+            image?: string;
             roles?: components["schemas"]["Role"][];
             userIds?: string[];
         };
         NotificationSendGeneral: components["schemas"]["Expand_Omit_NotificationMutable.event_-and-_roles_63_-Role-Array--userIds_63_-string-Array--metadata_63_-GenericObject__"];
-        /** @enum {string} */
-        "NotificationEvent.SIGN_UP": "sign-up";
-        /** @enum {string} */
-        "NotificationEvent.NEW_POST": "new-post";
-        NotificationPayload: {
-            /** Format: double */
-            timestamp?: number;
-        } & ({
-            data: components["schemas"]["NotificationSendGeneral"];
-            event: components["schemas"]["NotificationEvent.GENERAL"];
-        } | {
-            data: {
-                email: string;
-                name: string;
-            };
-            event: components["schemas"]["NotificationEvent.SIGN_UP"];
-        } | {
-            data: {
-                title: string;
-                author: string;
-            };
-            event: components["schemas"]["NotificationEvent.NEW_POST"];
-        });
         "Expand_Prisma.notificationsCreateManyInput-and-_metadata_63_-GenericObject__": {
             id?: string;
             created_at?: string | (Date | undefined);
             updated_at?: string | (Date | undefined);
             title: string;
-            body: string;
-            image?: string;
             link?: string;
             metadata?: (components["schemas"]["Prisma.NullableJsonNullValueInput"] | components["schemas"]["InputJsonValue"]) & components["schemas"]["GenericObject"];
+            body: string;
             event: string;
+            image?: string;
         };
         Notification: components["schemas"]["Expand_Prisma.notificationsCreateManyInput-and-_metadata_63_-GenericObject__"];
         PaginationSortResponse_Notification_: {
@@ -624,6 +599,35 @@ export interface components {
             url: string;
         };
         /** @enum {string} */
+        "BgJobType.SEND_NOTIFICATION": "send-notification";
+        /** @enum {string} */
+        "NotificationEvent.GENERAL": "general";
+        /** @enum {string} */
+        "NotificationEvent.SIGN_UP": "sign-up";
+        /** @enum {string} */
+        "NotificationEvent.NEW_POST": "new-post";
+        NotificationPayload: {
+            /** Format: date-time */
+            timestamp?: Date;
+        } & ({
+            data: components["schemas"]["NotificationSendGeneral"];
+            event: components["schemas"]["NotificationEvent.GENERAL"];
+        } | {
+            data: {
+                email: string;
+                name: string;
+            };
+            event: components["schemas"]["NotificationEvent.SIGN_UP"];
+        } | {
+            data: {
+                title: string;
+                author: string;
+            };
+            event: components["schemas"]["NotificationEvent.NEW_POST"];
+        });
+        /** @enum {string} */
+        "BgJobType.RESIZE_IMAGE": "resize-image";
+        /** @enum {string} */
         "Prisma.ModelName": "otps" | "posts" | "users" | "notifications" | "userNotifications";
         /** @enum {string} */
         IMAGE_SIZE: "small" | "medium" | "large";
@@ -633,9 +637,48 @@ export interface components {
             record_id: string;
             model: components["schemas"]["Prisma.ModelName"];
         };
-        FileWebhookHandleResize: {
+        FileResizeImgInput: {
             resize_config: components["schemas"]["Resizeconfig"];
             url: string;
+        };
+        "Expand_BgJobData-and-_taskId-string--taskMetadata-GenericObject__": {
+            createdBy?: string;
+            /** Format: date-time */
+            scheduledFor?: Date;
+            job: components["schemas"]["BgJobType.SEND_NOTIFICATION"];
+            payload: components["schemas"]["NotificationPayload"];
+            taskId: string;
+            taskMetadata: components["schemas"]["GenericObject"];
+        } | {
+            createdBy?: string;
+            /** Format: date-time */
+            scheduledFor?: Date;
+            job: components["schemas"]["BgJobType.RESIZE_IMAGE"];
+            payload: components["schemas"]["FileResizeImgInput"];
+            taskId: string;
+            taskMetadata: components["schemas"]["GenericObject"];
+        };
+        BgJobHandlerBody: components["schemas"]["Expand_BgJobData-and-_taskId-string--taskMetadata-GenericObject__"];
+        /** @enum {string} */
+        BgJobStatus: "pending" | "in-progress" | "success" | "failed";
+        /** @enum {string} */
+        BgJobType: "send-notification" | "resize-image";
+        BgJob: {
+            errorMessage?: string;
+            resultDetails?: components["schemas"]["GenericObject"];
+            /** Format: date-time */
+            scheduledFor?: Date;
+            job: components["schemas"]["BgJobType"];
+            createdBy: string | null;
+            /** Format: date-time */
+            updatedAt?: Date;
+            /** Format: date-time */
+            createdAt?: Date;
+            status: components["schemas"]["BgJobStatus"];
+        };
+        APIResponse_BgJob_: {
+            data: components["schemas"]["BgJob"] | null;
+            error: string | null;
         };
         AuthLoginResponse: {
             refreshToken: string;
@@ -1002,32 +1045,6 @@ export interface operations {
             };
         };
     };
-    NotificationHandleTrigger: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["NotificationPayload"] & {
-                    taskMetadata: components["schemas"]["GenericObject"];
-                };
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["APIResponse_Message_"];
-                };
-            };
-        };
-    };
     NotificationSendGeneral: {
         parameters: {
             query?: never;
@@ -1211,7 +1228,7 @@ export interface operations {
             };
         };
     };
-    FileHandleImageResize: {
+    HandleBgJob: {
         parameters: {
             query?: never;
             header?: never;
@@ -1220,7 +1237,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["FileWebhookHandleResize"];
+                "application/json": components["schemas"]["BgJobHandlerBody"];
             };
         };
         responses: {
@@ -1231,6 +1248,28 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["APIResponse_Message_"];
+                };
+            };
+        };
+    };
+    GetBgJob: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["APIResponse_BgJob_"];
                 };
             };
         };
