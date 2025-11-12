@@ -13,6 +13,7 @@ type AnyFile = File | string;
 
 type Props = {
   value?: AnyFile[];
+  uploadText?: string;
   count?: number;
   onChange?: (files: AnyFile[]) => void;
   accept?: string;
@@ -28,6 +29,7 @@ function toConsistentFile(file: AnyFile): ConsistentFile {
 
 const FilePicker: React.FC<Props> = ({
   value,
+  uploadText = "Upload",
   count,
   onChange,
   accept,
@@ -51,7 +53,7 @@ const FilePicker: React.FC<Props> = ({
           })
         }
       >
-        Upload
+        {uploadText}
       </Button>
       {_value.map((file, ix) => (
         <Space align="center" key={file.name || ix}>
