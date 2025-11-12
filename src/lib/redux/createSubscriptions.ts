@@ -9,7 +9,7 @@ const createSubscriptons = (
       payload: any,
       thunkOptions: {
         dispatch: AppDispatch;
-        getState: RootState;
+        getState: () => RootState;
       } & GenericObject
     ) => Function;
   }
