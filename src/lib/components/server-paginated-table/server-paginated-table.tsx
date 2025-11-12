@@ -255,7 +255,7 @@ export default function ServerPaginatedTable<T extends AnyObject>({
           col.sorter &&
           tableParams["sort.field"] === ((col as any).dataIndex || col.key)
             ? tableParams["sort.order"] || undefined
-            : col.defaultSortOrder,
+            : undefined,
       }));
   }, [columns, data, selectedColumnKeys, tableParams]);
 
