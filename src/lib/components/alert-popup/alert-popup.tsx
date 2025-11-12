@@ -4,7 +4,7 @@ import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { Modal, ModalFuncProps } from "antd";
 import { HookAPI } from "antd/es/modal/useModal";
 import { t } from "i18next";
-import _ from "lodash";
+import { capitalize } from "lodash";
 import { ReactNode } from "react";
 
 function handleCb(cb: AlertPopupProps["onOk"]) {
@@ -29,8 +29,8 @@ export type AlertPopupProps = ModalFuncProps & {
 export default function AlertPopup({
   title,
   message,
-  okText = _.capitalize(t("common:ok")),
-  cancelText = _.capitalize(t("common:cancel")),
+  okText = capitalize(t("common:ok")),
+  cancelText = capitalize(t("common:cancel")),
   onOk,
   onCancel,
   cancellable = true,

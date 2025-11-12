@@ -431,6 +431,10 @@ export interface components {
             page?: number;
             search?: string;
             role?: components["schemas"]["Role"];
+            /** Format: date-time */
+            initial_created_at?: Date;
+            /** Format: date-time */
+            final_created_at?: Date;
         };
         "Expand_Optional_UserMutable.bio-or-photo__": {
             bio?: string;
@@ -489,6 +493,10 @@ export interface components {
             author_id?: string;
             labels?: string[];
             populate?: boolean;
+            /** Format: date-time */
+            initial_created_at?: Date;
+            /** Format: date-time */
+            final_created_at?: Date;
         };
         "Expand_Omit_PostMutable.author_id__": {
             title: string;
@@ -809,6 +817,8 @@ export interface operations {
                 page?: number;
                 search?: string;
                 role?: components["schemas"]["Role"];
+                initial_created_at?: Date | undefined;
+                final_created_at?: Date | undefined;
             };
             header?: never;
             path?: never;
@@ -1003,6 +1013,8 @@ export interface operations {
                 author_id?: string;
                 labels?: string[];
                 populate?: boolean;
+                initial_created_at?: Date | undefined;
+                final_created_at?: Date | undefined;
             };
             header?: never;
             path?: never;
