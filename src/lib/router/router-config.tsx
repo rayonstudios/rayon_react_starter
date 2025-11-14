@@ -3,6 +3,7 @@ import NotFound from "@/pages/404/404";
 import ForgotPassword from "@/pages/auth/forgot-password";
 import Login from "@/pages/auth/login";
 import ResetPassword from "@/pages/auth/reset-password";
+import BgJobsPage from "@/pages/bg-jobs/bg-jobs";
 import ErrorBoundaryTestPage from "@/pages/error-boundary-test/error-boundary-test";
 import Posts from "@/pages/posts/posts";
 import SamplePage from "@/pages/sample-page/sample-page";
@@ -12,6 +13,7 @@ import {
   BookOutlined,
   BugOutlined,
   DashboardOutlined,
+  ThunderboltOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { ReactNode } from "react";
@@ -64,6 +66,18 @@ export const useRouterConfig = (): RouterConfig[] => {
         path: "/users",
       },
       allowedRoles: [Role.SUPER_ADMIN],
+    },
+    {
+      layoutType: "dashboard",
+      authType: "private",
+      component: <BgJobsPage />,
+      menuItem: {
+        title: "Background Jobs",
+        icon: <ThunderboltOutlined />,
+      },
+      route: {
+        path: "/bg-jobs",
+      },
     },
     {
       layoutType: "dashboard",
