@@ -36,10 +36,7 @@ const login = createAsyncThunk(
   }
 );
 
-const logout = createAsyncThunk(`${name}/logout`, async () => {
-  localStorage.removeItem("accessToken");
-  localStorage.removeItem("refreshToken");
-});
+const logout = createAsyncThunk(`${name}/logout`, authService.logout);
 
 const changePassword = createAsyncThunk(
   `${name}/changePassword`,

@@ -1,4 +1,6 @@
+import { firebase } from "@/lib/firebase/firebase.service";
 import apiClient, { withApiResponseHandling } from "@/lib/openapi-fetch.config";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import {
   AuthChangePasswordBody,
   AuthForgotPasswordBody,
@@ -7,9 +9,15 @@ import {
 } from "../types/auth.types";
 
 async function login(payload: AuthLoginBody) {
-  const { data } = await withApiResponseHandling(
-    apiClient.POST("/auth/login", { body: payload })
-  );
+  const [{ data }] = await Promise.all([
+    withApiResponseHandling(apiClient.POST("/auth/login", { body: payload })),
+    firebase.isEnabled &&
+      signInWithEmailAndPassword(
+        firebase.auth,
+        payload.email,
+        payload.password
+      ),
+  ]);
   return data;
 }
 
@@ -45,8 +53,17 @@ async function resetPassword(payload: AuthResetPasswordBody) {
   return response;
 }
 
+async function logout() {
+  if (firebase.isEnabled) {
+    await signOut(firebase.auth);
+  }
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+}
+
 const authService = {
   login,
+  logout,
   refreshToken,
   changePassword,
   forgotPassword,
