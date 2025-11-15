@@ -1,14 +1,14 @@
 import PageHeading from "@/lib/components/page-heading/page-heading";
 import { bgJobsActions } from "@/modules/bg-jobs/slices/bg-jobs.slice";
 import { BgJobStatus } from "@/modules/bg-jobs/types/bg-jobs.types";
-import { useUserBgJobs } from "@/modules/bg-jobs/hooks/bg-jobs.hooks";
 import { Button, Card, Empty, Progress, Space, Tag, Typography } from "antd";
 import { ThunderboltOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useIsLoading } from "@/lib/redux/enhancers/status.enhancer";
-import { useAppDispatch } from "@/lib/redux/store";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/store";
 import { formattedDateTime } from "@/lib/utils/dateTime.utils";
+import { useEffect } from "react";
 
 dayjs.extend(relativeTime);
 
@@ -23,8 +23,16 @@ const statusColorMap: Record<BgJobStatus, string> = {
 
 const BgJobsPage = () => {
   const dispatch = useAppDispatch();
-  const { jobs, loading: jobsLoading } = useUserBgJobs();
+  const jobs = useAppSelector((state) => state.bgJobs.jobs);
+  const jobsLoading = useIsLoading("bgJobs", "jobsStatus");
   const isCreatingJob = useIsLoading("bgJobs", "createDemoJobStatus");
+
+  useEffect(() => {
+    dispatch(bgJobsActions.userBgJobsSub());
+    return () => {
+      dispatch(bgJobsActions.userBgJobsUnsub());
+    };
+  }, [dispatch]);
 
   const handleCreateDemoJob = () => {
     dispatch(bgJobsActions.createDemoJob());
