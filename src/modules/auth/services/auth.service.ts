@@ -1,4 +1,4 @@
-import { firebase } from "@/lib/firebase/firebase.service";
+import { firebase, getFirebaseEmail } from "@/lib/firebase/firebase.service";
 import apiClient, { withApiResponseHandling } from "@/lib/openapi-fetch.config";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import {
@@ -14,7 +14,7 @@ async function login(payload: AuthLoginBody) {
     firebase.isEnabled &&
       signInWithEmailAndPassword(
         firebase.auth,
-        payload.email,
+        getFirebaseEmail(payload.email),
         payload.password
       ),
   ]);

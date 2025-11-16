@@ -139,10 +139,6 @@ const BgJobsPage = () => {
                     <span className="font-medium">Created:</span>{" "}
                     {dayjs(job.createdAt).fromNow()}
                   </div>
-                  <div>
-                    <span className="font-medium">Updated:</span>{" "}
-                    {dayjs(job.updatedAt).fromNow()}
-                  </div>
                 </div>
               </div>
             </Card>
