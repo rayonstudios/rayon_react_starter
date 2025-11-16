@@ -15,6 +15,7 @@ jobs:
       - run: npm ci && npm run build:test
         env:
           CI: false
+          VITE_FIREBASE_API_KEY: "${{ secrets.VITE_FIREBASE_API_KEY }}"
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
