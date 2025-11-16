@@ -3,7 +3,7 @@
     "rayon-gcp-starter": {
       "hosting": {
         "prod": [
-          "rayon-gcp-starter-prod"
+          "rayon-gcp-starter"
         ],
         "test": [
           "rayon-gcp-starter-test"
