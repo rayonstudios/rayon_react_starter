@@ -166,10 +166,17 @@ Three environment files are included:
 VITE_API_BASE_URL=http://localhost:3000/api/v1    # Backend API URL
 VITE_ENV=dev                                       # Environment identifier
 VITE_HCAPTCHA_SITE_KEY=your-site-key              # hCaptcha site key
-FIREBASE_AUTH_ENABLED=true                         # Enable/disable Firebase features
+VITE_FIREBASE_AUTH_ENABLED=true                   # Enable/disable Firebase features
+VITE_FIREBASE_API_KEY=your-firebase-api-key       # Firebase API key (required in .env.local)
 ```
 
-**Note**: Create `.env.local` (gitignored) to override any environment-specific values locally.
+**Important**: Create a `.env.local` file (gitignored) with your `VITE_FIREBASE_API_KEY` to access Firebase services. This key is consumed by [src/lib/firebase/firebase.service.ts](src/lib/firebase/firebase.service.ts) and is required for Firestore, and Cloud Messaging functionality.
+
+Example `.env.local`:
+
+```bash
+VITE_FIREBASE_API_KEY=AIzaSyC...your-actual-key
+```
 
 ---
 
