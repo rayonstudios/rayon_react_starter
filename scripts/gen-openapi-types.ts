@@ -20,7 +20,7 @@ const envType = process.argv[2];
 
 if (!envType) {
   console.error(
-    "Usage: tsx gen-openapi-types.ts <environment_type> (development|production)"
+    "Usage: tsx gen-openapi-types.ts <environment_type> (development|test|production)"
   );
   process.exit(1);
 }
@@ -37,7 +37,7 @@ if (!fs.existsSync(envFile)) {
 const envContent = fs.readFileSync(envFile, "utf8");
 
 // Extract API base URL from environment file
-const apiBaseUrlMatch = envContent.match(/VITE_API_BASE_URL=(.+)/);
+const apiBaseUrlMatch = envContent.match(/^VITE_API_BASE_URL=(.+)/m);
 const apiBaseUrl = apiBaseUrlMatch ? apiBaseUrlMatch[1].trim() : null;
 
 if (!apiBaseUrl) {

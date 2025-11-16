@@ -3,71 +3,95 @@ import { FilterOutlined } from "@ant-design/icons";
 import { useDeepCompareLayoutEffect } from "ahooks";
 import { Button, DatePicker, Form, Input, Select, Switch, Tooltip } from "antd";
 import { useForm } from "antd/lib/form/Form";
-import { useState } from "react";
+import dayjs from "dayjs";
+import { ComponentProps, useState } from "react";
 import CustomModal from "../custom-modal/custom-modal";
 import ServerPaginatedSelect from "../server-paginated-select/server-paginated-select";
 
 type Filter = {
   label: string;
   key: string;
-  type: "select" | "server-select" | "date" | "boolean" | "search";
-  filterProps?: GenericObject;
   value?: any;
-};
+  valueResolver?: (val: any) => any;
+} & (
+  | {
+      type: "select";
+      filterProps?: ComponentProps<typeof Select>;
+    }
+  | {
+      type: "server-select";
+      filterProps?: ComponentProps<typeof ServerPaginatedSelect>;
+    }
+  | {
+      type: "date";
+      filterProps?: ComponentProps<typeof DatePicker>;
+    }
+  | {
+      type: "boolean";
+      filterProps?: ComponentProps<typeof Switch>;
+    }
+  | {
+      type: "search";
+      filterProps?: ComponentProps<typeof Input>;
+    }
+);
 
 type RenderFilterProps = {
   filter: Filter;
   value?: any;
-  onChange?: (value: any) => void;
+  onChange?: (val: any, ...args: any[]) => void;
 };
 
 function RenderFilter({ filter, value, onChange }: RenderFilterProps) {
+  const handleChange = (val: any, ...args: any[]) => {
+    if (filter.valueResolver) val = filter.valueResolver(val);
+    onChange?.(val, ...args);
+  };
+
   switch (filter.type) {
     case "select":
       return (
         <Select
-          {...filter.filterProps}
           allowClear
+          {...filter.filterProps}
           value={value}
-          onChange={onChange}
+          onChange={handleChange}
         />
       );
     case "server-select":
       return (
         <ServerPaginatedSelect
-          {...(filter.filterProps as any)}
           allowClear
-          onChange={onChange}
+          {...(filter.filterProps as any)}
           value={value}
+          onChange={handleChange}
         />
       );
     case "date":
       return (
         <DatePicker
-          {...filter.filterProps}
           allowClear
-          onChange={onChange}
-          value={value}
+          {...filter.filterProps}
+          value={value ? dayjs(value) : null}
+          onChange={handleChange}
         />
       );
     case "boolean":
-      return <Switch checked={value} onChange={onChange} />;
-    case "search":
       return (
-        <Input
+        <Switch
           {...filter.filterProps}
-          allowClear
-          onChange={onChange}
-          value={value}
+          checked={value}
+          onChange={handleChange}
         />
       );
+    case "search":
     default:
       return (
         <Input
-          {...filter.filterProps}
           allowClear
-          onChange={onChange}
+          {...filter.filterProps}
           value={value}
+          onChange={handleChange}
         />
       );
   }

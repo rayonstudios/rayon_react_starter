@@ -1,17 +1,18 @@
-name: Preview deploy to Firebase Hosting on PR (dev)
-on:
-  pull_request:
+name: Deploy to Firebase Hosting - Test
+"on":
+  push:
     branches:
-      - dev
+      - test
+  workflow_dispatch:
 
 jobs:
-  build_and_preview:
+  build_and_deploy:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - run: npm ci && npm run build:dev
+      - run: npm ci && npm run build:test
         env:
           CI: false
           VITE_FIREBASE_API_KEY: "${{ secrets.VITE_FIREBASE_API_KEY }}"
@@ -20,5 +21,6 @@ jobs:
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.GCP_SA }}"
+          channelId: live
           projectId: rayon-gcp-starter
-          target: dev
+          target: test

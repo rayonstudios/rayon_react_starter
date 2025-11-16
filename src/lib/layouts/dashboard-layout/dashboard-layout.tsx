@@ -1,5 +1,5 @@
 import { JSSTheme } from "@/lib/types/misc";
-import { isDev } from "@/lib/utils/misc.utils";
+import { isDev, isTest } from "@/lib/utils/misc.utils";
 import { cn } from "@/lib/utils/styles.utils";
 import { Layout, Typography } from "antd";
 import React, { PropsWithChildren } from "react";
@@ -40,7 +40,7 @@ const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
           <Layout.Footer className={cn("p-4 text-center", classes.footer)}>
             <Typography.Text className="text-xs font-medium">
               Version {pkgJson.version}
-              {isDev() ? " (dev)" : ""}
+              {isDev() ? " (dev)" : isTest() ? " (test)" : ""}
             </Typography.Text>
           </Layout.Footer>
         </Layout>

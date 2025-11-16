@@ -11,13 +11,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: yarn install --frozen-lockfile && npm run build:prod
+      - run: npm ci && npm run build:prod
         env:
           CI: false
+          VITE_FIREBASE_API_KEY: "${{ secrets.VITE_FIREBASE_API_KEY }}"
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.SECRETJSON_PROD }}"
+          firebaseServiceAccount: "${{ secrets.GCP_SA }}"
           projectId: rayon-gcp-starter
           target: prod

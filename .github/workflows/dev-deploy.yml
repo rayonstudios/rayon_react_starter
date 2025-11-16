@@ -12,14 +12,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: yarn install --frozen-lockfile && npm run build:dev
+      - run: npm ci && npm run build:dev
         env:
           CI: false
+          VITE_FIREBASE_API_KEY: "${{ secrets.VITE_FIREBASE_API_KEY }}"
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.SECRETJSON_DEV }}"
+          firebaseServiceAccount: "${{ secrets.GCP_SA }}"
           channelId: live
           projectId: rayon-gcp-starter
           target: dev

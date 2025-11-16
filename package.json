@@ -1,15 +1,18 @@
 {
   "name": "rayon_react_starter",
   "private": true,
-  "version": "2.1",
+  "version": "3.0",
   "description": "Rayon React Starter is an opinionated starter kit designed to scaffold React projects quickly with a comprehensive and well-structured environment. Built with a modern tech stack and batteries included, it helps you start building your project in no time.",
   "type": "module",
   "scripts": {
     "dev": "npm run gen-types:dev && vite",
+    "test": "npm run gen-types:test && vite --mode test",
     "prod": "npm run gen-types:prod && vite --mode production",
     "build:prod": "npm run gen-types:prod && tsc && vite build",
+    "build:test": "npm run gen-types:test && tsc && vite build --mode test",
     "build:dev": "npm run gen-types:dev && tsc && vite build --mode development",
     "gen-types:dev": "tsx scripts/gen-openapi-types.ts development",
+    "gen-types:test": "tsx scripts/gen-openapi-types.ts test",
     "gen-types:prod": "tsx scripts/gen-openapi-types.ts production",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
@@ -30,6 +33,7 @@
     "clsx": "^2.1.0",
     "color": "^4.2.3",
     "dayjs": "^1.11.10",
+    "firebase": "^12.6.0",
     "i18next": "^23.10.1",
     "lucide": "^0.447.0",
     "openapi-fetch": "^0.13.5",
@@ -68,7 +72,10 @@
     "vite-tsconfig-paths": "^4.3.2"
   },
   "lint-staged": {
-    "*.{ts,tsx}": "eslint --cache --fix",
-    "*.{js,css,md}": "prettier --write"
+    "*.{ts,tsx}": [
+      "eslint --cache --fix",
+      "prettier --write"
+    ],
+    "*.{js,css,md,json}": "prettier --write"
   }
 }
