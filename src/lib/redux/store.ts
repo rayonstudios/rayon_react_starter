@@ -1,5 +1,6 @@
 import { authSlice } from "@/modules/auth/slices/auth.slice";
 import { profileSlice } from "@/modules/auth/slices/profile.slice";
+import bgJobsReducer from "@/modules/bg-jobs/slices/bg-jobs.slice";
 import { fileSlice } from "@/modules/file/slices/file.slice";
 import { userSlice } from "@/modules/user/slices/user.slice";
 import { configureStore } from "@reduxjs/toolkit";
@@ -14,6 +15,7 @@ export const store = configureStore({
     profile: profileSlice.reducer,
     user: userSlice.reducer,
     file: fileSlice.reducer,
+    bgJobs: bgJobsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }).concat(

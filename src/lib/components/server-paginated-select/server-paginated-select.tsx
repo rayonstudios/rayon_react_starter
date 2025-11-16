@@ -11,7 +11,10 @@ import LazySelect from "./lazy-select";
 type ServerPaginatedSelectProps = React.ComponentProps<typeof Select> & {
   url: string;
   pageSize?: number;
-  renderItem: (item: any) => { node: React.ReactNode; disabled?: boolean };
+  renderItem: (
+    item: any,
+    ix: number
+  ) => { node: React.ReactNode; disabled?: boolean };
   valueResolver: (item: any) => string;
   style?: React.CSSProperties;
   onChange?: (value: any, option: any) => void;
@@ -23,7 +26,7 @@ type ServerPaginatedSelectProps = React.ComponentProps<typeof Select> & {
 
 export default function ServerPaginatedSelect({
   url,
-  pageSize = 0, // 0 means no pagination
+  pageSize = 20, // 0 means no pagination
   renderItem,
   valueResolver = (item: any) => item?.id,
   style,
@@ -41,7 +44,7 @@ export default function ServerPaginatedSelect({
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any[]>([]);
   const [noMore, setNoMore] = useStateCallback(false);
-  const [currPage, setCurrPage] = useState(1);
+  const currPage = useRef(1);
   const [opened, setOpened] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const _fetchData = useRef<Function>(() => {});
@@ -55,17 +58,17 @@ export default function ServerPaginatedSelect({
     const filters: GenericObject = qs.parse(query) ?? {};
     if (pageSize) {
       filters.limit = pageSize;
-      filters.page = currPage;
+      filters.page = currPage.current++;
     }
-    if (searchTerm) filters.name = searchTerm;
+    if (searchTerm) filters.search = searchTerm;
 
     axios
       .get(`${_url}?${qs.stringify(filters)}`)
-      .then(({ data }) => {
+      .then(({ data: { data } }) => {
         const list = Array.isArray(data)
           ? data
-          : Array.isArray(data.docs)
-            ? data.docs
+          : Array.isArray(data.list)
+            ? data.list
             : [];
 
         if (!pageSize || list.length < pageSize) setNoMore(true);
@@ -84,7 +87,7 @@ export default function ServerPaginatedSelect({
   useEffect(() => {
     if (!opened) return;
     setData([]);
-    setCurrPage(1);
+    currPage.current = 1;
     setNoMore(false, () => setTimeout(() => _fetchData.current(), 100));
   }, [opened]);
 
@@ -92,7 +95,7 @@ export default function ServerPaginatedSelect({
     debounce(() => {
       if (!opened) return;
       setData([]);
-      setCurrPage(1);
+      currPage.current = 1;
       setNoMore(false, () => setTimeout(() => _fetchData.current(), 100));
     }, searchDebouncing),
     [searchDebouncing, opened]
@@ -117,7 +120,7 @@ export default function ServerPaginatedSelect({
     ) {
       fetchDefaultValue(val)
         .then((item) =>
-          setData((prev) => uniqBy(prev.concat(item), "id") as any[])
+          setData((prev) => uniqBy(prev.concat(item.data), "id") as any[])
         )
         .catch(console.error);
     }

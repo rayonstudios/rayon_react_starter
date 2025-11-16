@@ -1,10 +1,4 @@
-export const capitalize = (s: string) => {
-  if (typeof s !== "string") return "";
-  return s
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-};
+import { capitalize } from "lodash";
 
 export const kebabCaseToWords = (str: string) => {
   return str

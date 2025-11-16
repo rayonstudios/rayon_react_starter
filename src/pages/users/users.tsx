@@ -19,6 +19,7 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import { Button, Space, Tag, Tooltip, Typography } from "antd";
+import dayjs from "dayjs";
 import React, { useRef } from "react";
 import UserAvatar from "./components/user-avatar";
 import EditUserModal from "./modals/edit-user-modal";
@@ -107,6 +108,26 @@ const Users: React.FC<Props> = () => {
                 value: item,
               })),
             },
+          },
+          {
+            label: "Created after",
+            type: "date",
+            key: "initial_created_at",
+            filterProps: {
+              placeholder: "Select initial creation date",
+              className: "w-full",
+            },
+          },
+          {
+            label: "Created before",
+            type: "date",
+            key: "final_created_at",
+            filterProps: {
+              placeholder: "Select final creation date",
+              className: "w-full",
+            },
+            valueResolver: (date?: dayjs.Dayjs) =>
+              date ? dayjs(date).endOf("day") : null,
           },
         ]}
         columns={[

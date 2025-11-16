@@ -11,7 +11,7 @@ import {
   SettingOutlined,
 } from "@ant-design/icons";
 import { useResponsive } from "ahooks";
-import { Dropdown, Layout, Select, Space, Tooltip } from "antd";
+import { Dropdown, Layout, Select, Space, Spin, Tooltip } from "antd";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -120,7 +120,7 @@ function Header() {
                   key: "logout",
                   label: "Logout",
                   danger: true,
-                  icon: <LogoutOutlined />,
+                  icon: logoutLoading ? <Spin /> : <LogoutOutlined />,
                   disabled: logoutLoading,
                   onClick: onLogout,
                 },

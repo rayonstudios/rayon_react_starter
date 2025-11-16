@@ -9,6 +9,13 @@ import { Role, useRole } from "@/modules/auth/hooks/role.hooks";
 import { authActions } from "@/modules/auth/slices/auth.slice";
 import { profileActions } from "@/modules/auth/slices/profile.slice";
 import NotFound from "@/pages/404/404";
+import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import localeData from "dayjs/plugin/localeData";
+import weekday from "dayjs/plugin/weekday";
+import weekOfYear from "dayjs/plugin/weekOfYear";
+import weekYear from "dayjs/plugin/weekYear";
 import _ from "lodash";
 import React, {
   PropsWithChildren,
@@ -26,6 +33,13 @@ import {
   useNavigate,
 } from "react-router-dom";
 import { RouterConfig, useRouterConfig } from "./router-config";
+
+dayjs.extend(customParseFormat);
+dayjs.extend(advancedFormat);
+dayjs.extend(weekday);
+dayjs.extend(localeData);
+dayjs.extend(weekOfYear);
+dayjs.extend(weekYear);
 
 export function getRoutePath(basePath: string, currPath: string) {
   if (currPath.startsWith("/")) return currPath;

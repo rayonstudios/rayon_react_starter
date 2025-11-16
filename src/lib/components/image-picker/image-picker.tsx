@@ -57,7 +57,7 @@ export default function ImagePicker({
   );
 
   useUpdateEffect(() => {
-    onChange && onChange(images.filter(isImage).map((img) => img.src));
+    onChange && onChange(images.filter(isImage));
   }, [images]);
 
   useEffect(() => {

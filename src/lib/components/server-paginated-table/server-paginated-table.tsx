@@ -3,13 +3,18 @@ import { GenericObject } from "@/lib/types/misc";
 import { isNullish } from "@/lib/utils/misc.utils";
 import useUrlState from "@ahooksjs/use-url-state";
 import { ReloadOutlined } from "@ant-design/icons";
-import { useDeepCompareEffect, useUpdateEffect } from "ahooks";
+import {
+  useDeepCompareEffect,
+  useLocalStorageState,
+  useUpdateEffect,
+} from "ahooks";
 import { Button, Table, TableProps, Tooltip } from "antd";
 import { AnyObject } from "antd/es/_util/type";
 import { ColumnsType } from "antd/es/table";
 import { capitalize, pickBy } from "lodash";
 import qs from "qs";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import ColsSelector from "./cols-selector";
 import FiltersButton from "./filters-button";
 
 function generateColsFromData<T>(data: T[] = []) {
@@ -53,6 +58,7 @@ export type ServerPaginatedTableProps<T> = TableProps<T> & {
   showQuickJumper?: boolean;
   showTotal?: (total: number, range: [number, number]) => string;
   showRefresh?: boolean;
+  showColumnSelector?: boolean;
 };
 
 export default function ServerPaginatedTable<T extends AnyObject>({
@@ -69,6 +75,7 @@ export default function ServerPaginatedTable<T extends AnyObject>({
   showQuickJumper = true,
   showTotal = (total, range) => `${range[0]} - ${range[1]} of ${total} items`,
   showRefresh = true,
+  showColumnSelector = true,
   ...props
 }: ServerPaginatedTableProps<T>) {
   const defaultSortCol = useMemo(
@@ -94,6 +101,30 @@ export default function ServerPaginatedTable<T extends AnyObject>({
   });
   const [total, setTotal] = useState(0);
 
+  const allColumnsInfo = useMemo(() => {
+    const colsList = Array.isArray(columns)
+      ? columns
+      : generateColsFromData(data);
+    return colsList.map((col) => ({
+      key: col.key || (col as any).dataIndex,
+      title: (col as any).title || col.key || (col as any).dataIndex,
+    }));
+  }, [columns, data]);
+
+  const allColumnKeys = allColumnsInfo.map((col) => col.key);
+
+  const [selectedColumnKeys, setSelectedColumnKeys] = useLocalStorageState<
+    string[]
+  >(`${url}-selected-columns`, {
+    defaultValue: allColumnKeys,
+  });
+
+  useEffect(() => {
+    setSelectedColumnKeys((prev = []) =>
+      prev.filter((key) => allColumnKeys.includes(key))
+    );
+  }, [allColumnKeys.join(",")]);
+
   const handleTableChange: ServerPaginatedTableProps<T>["onChange"] = (
     pagination,
     _,
@@ -101,7 +132,6 @@ export default function ServerPaginatedTable<T extends AnyObject>({
   ) => {
     const sortObj = (Array.isArray(sorters) ? sorters[0] : sorters) || {};
 
-    // if sorter is removed from a non-default column, set it to default
     if (
       defaultSortField &&
       sortObj.field !== defaultSortField &&
@@ -158,16 +188,19 @@ export default function ServerPaginatedTable<T extends AnyObject>({
     const [_url, _query = ""] = url.split("?");
 
     const query: GenericObject = qs.parse(_query);
+
     // pagination
     if (pageSize) {
       query.limit = pageSize;
       query.page = current;
     }
+
     // filters
     Object.entries(restParams).forEach(([key, value]) => {
       if (!key.startsWith("filter.")) return;
       if (!isNullish(value)) query[key.split("filter.")[1]!] = value;
     });
+
     // sorting
     if (restParams["sort.field"] && !isNullish(restParams["sort.order"])) {
       query.sortField = restParams["sort.field"];
@@ -207,24 +240,36 @@ export default function ServerPaginatedTable<T extends AnyObject>({
       });
   }, [data, fetchData, setData, setLoading, setTableParams, setTotal]);
 
+  // Only show selected columns
   const cols = useMemo(() => {
     const colsList = Array.isArray(columns)
       ? columns
       : generateColsFromData(data);
-    return colsList.map((col) => ({
-      ...col,
-      sortOrder:
-        col.sorter &&
-        tableParams["sort.field"] === ((col as any).dataIndex || col.key)
-          ? tableParams["sort.order"] || undefined
-          : col.defaultSortOrder,
-    }));
-  }, [columns, data]);
+    return colsList
+      .filter((col) =>
+        selectedColumnKeys?.includes(col.key || (col as any).dataIndex)
+      )
+      .map((col) => ({
+        ...col,
+        sortOrder:
+          col.sorter &&
+          tableParams["sort.field"] === ((col as any).dataIndex || col.key)
+            ? tableParams["sort.order"] || undefined
+            : undefined,
+      }));
+  }, [columns, data, selectedColumnKeys, tableParams]);
 
   return (
     <div className="relative">
       <div className="absolute flex flex-row items-center gap-x-3 -translate-y-full -top-6 right-0 z-10">
         {optionsBar}
+        {showColumnSelector && (
+          <ColsSelector
+            allColumnsInfo={allColumnsInfo}
+            selectedColumnKeys={selectedColumnKeys || []}
+            onSelectedColumnsChange={setSelectedColumnKeys}
+          />
+        )}
         {filters?.length ? (
           <FiltersButton
             active={Object.entries(tableParams).some(
