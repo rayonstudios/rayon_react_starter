@@ -387,8 +387,10 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
-    /** @description From https://github.com/sindresorhus/type-fest/
-     *     Matches any valid JSON value. */
+    /**
+     * @description From https://github.com/sindresorhus/type-fest/
+     *     Matches any valid JSON value.
+     */
     JsonValue:
       | (
           | string
@@ -398,14 +400,18 @@ export interface components {
           | components["schemas"]["JsonArray"]
         )
       | null;
-    /** @description From https://github.com/sindresorhus/type-fest/
+    /**
+     * @description From https://github.com/sindresorhus/type-fest/
      *     Matches a JSON object.
-     *     This type can be useful to enforce some input to be JSON-compatible or as a super-type to be extended from. */
+     *     This type can be useful to enforce some input to be JSON-compatible or as a super-type to be extended from.
+     */
     JsonObject: {
       [key: string]: components["schemas"]["JsonValue"];
     };
-    /** @description From https://github.com/sindresorhus/type-fest/
-     *     Matches a JSON array. */
+    /**
+     * @description From https://github.com/sindresorhus/type-fest/
+     *     Matches a JSON array.
+     */
     JsonArray: Record<string, never>;
     /** @description From T, pick a set of properties whose keys are in the union K */
     "Pick_User.Exclude_keyofUser.password_hash-or-refresh_token_version__": {
@@ -551,18 +557,23 @@ export interface components {
       data: components["schemas"]["Message"] | null;
       error: string | null;
     };
-    /** @description Type of `Prisma.DbNull`.
+    /**
+     * @description Type of `Prisma.DbNull`.
      *
-     *     You cannot use other instances of this class. Please use the `Prisma.DbNull` value. */
+     *     You cannot use other instances of this class. Please use the `Prisma.DbNull` value.
+     */
     "Prisma.NullTypes.DbNull": Record<string, never>;
-    /** @description Type of `Prisma.JsonNull`.
+    /**
+     * @description Type of `Prisma.JsonNull`.
      *
-     *     You cannot use other instances of this class. Please use the `Prisma.JsonNull` value. */
+     *     You cannot use other instances of this class. Please use the `Prisma.JsonNull` value.
+     */
     "Prisma.NullTypes.JsonNull": Record<string, never>;
     "Prisma.NullableJsonNullValueInput":
       | components["schemas"]["Prisma.NullTypes.DbNull"]
       | components["schemas"]["Prisma.NullTypes.JsonNull"];
-    /** @description Matches any valid value that can be used as an input for operations like
+    /**
+     * @description Matches any valid value that can be used as an input for operations like
      *     create and update as the value of a JSON field. Unlike \`JsonValue\`, this
      *     type allows read-only arrays and read-only object properties and disallows
      *     \`null\` at the top level.
@@ -570,7 +581,8 @@ export interface components {
      *     \`null\` cannot be used as the value of a JSON field because its meaning
      *     would be ambiguous. Use \`Prisma.JsonNull\` to store the JSON null value or
      *     \`Prisma.DbNull\` to clear the JSON value and set the field to the database
-     *     NULL value instead. */
+     *     NULL value instead.
+     */
     InputJsonValue:
       | string
       | number
@@ -578,13 +590,17 @@ export interface components {
       | components["schemas"]["InputJsonObject"]
       | components["schemas"]["InputJsonArray"]
       | Record<string, never>;
-    /** @description Matches a JSON object.
-     *     Unlike \`JsonObject\`, this type allows undefined and read-only properties. */
+    /**
+     * @description Matches a JSON object.
+     *     Unlike \`JsonObject\`, this type allows undefined and read-only properties.
+     */
     InputJsonObject: {
       [key: string]: components["schemas"]["InputJsonValue"];
     };
-    /** @description Matches a JSON array.
-     *     Unlike \`JsonArray\`, readonly arrays are assignable to this type. */
+    /**
+     * @description Matches a JSON array.
+     *     Unlike \`JsonArray\`, readonly arrays are assignable to this type.
+     */
     InputJsonArray: Record<string, never>;
     /** @description Construct a type with a set of properties K of type T */
     "Record_string.any_": {

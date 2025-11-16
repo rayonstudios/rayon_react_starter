@@ -16,7 +16,7 @@ async function login(payload: AuthLoginBody) {
         firebase.auth,
         getFirebaseEmail(payload.email),
         payload.password
-      ),
+      ).catch(console.error),
   ]);
   return data;
 }
@@ -55,7 +55,7 @@ async function resetPassword(payload: AuthResetPasswordBody) {
 
 async function logout() {
   if (firebase.isEnabled) {
-    await signOut(firebase.auth);
+    await signOut(firebase.auth).catch(console.error);
   }
   localStorage.removeItem("accessToken");
   localStorage.removeItem("refreshToken");
