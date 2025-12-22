@@ -13,14 +13,10 @@ const databaseId = isProd()
     : "starter-test";
 
 const projectConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  apiKey: "AIzaSyDY_yldPr0P8kZyETMcDXKkcV0GINLta-Y",
   authDomain: "rayon-gcp-starter.firebaseapp.com",
   projectId: "rayon-gcp-starter",
-  storageBucket: isProd()
-    ? "rayon-gcp-starter"
-    : isDev()
-      ? "rayon-gcp-starter-dev"
-      : "rayon-gcp-starter-test",
+  storageBucket: "rayon-gcp-starter.firebasestorage.app",
   messagingSenderId: "227506371134",
   appId: "1:227506371134:web:c58e2b9e54cc1072326f6f",
   measurementId: "G-GQGDRNM8RJ",

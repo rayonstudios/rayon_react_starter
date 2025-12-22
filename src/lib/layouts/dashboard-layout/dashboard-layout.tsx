@@ -1,8 +1,10 @@
+import { useAppDispatch } from "@/lib/redux/store";
 import { JSSTheme } from "@/lib/types/misc";
 import { isDev, isTest } from "@/lib/utils/misc.utils";
 import { cn } from "@/lib/utils/styles.utils";
+import { profileActions } from "@/modules/auth/slices/profile.slice";
 import { Layout, Typography } from "antd";
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, useEffect } from "react";
 import { createUseStyles } from "react-jss";
 import pkgJson from "../../../../package.json";
 import EmptyLayout from "../empty-layout";
@@ -27,6 +29,19 @@ const useStyles = createUseStyles((theme: JSSTheme) => ({
 
 const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
   const classes = useStyles();
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(profileActions.upsertFcmToken())
+      .unwrap()
+      .then(() => {
+        console.log("FCM token setup completed successfully");
+      })
+      .catch(() => {
+        // Error is already logged in the slice, no need to log again
+        console.log("FCM token setup skipped or failed");
+      });
+  }, [dispatch]);
 
   return (
     <EmptyLayout>

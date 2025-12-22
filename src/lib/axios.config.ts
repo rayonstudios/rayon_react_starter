@@ -20,6 +20,12 @@ axios.interceptors.request.use((reqConfig) => {
   if (token && !reqConfig.headers.toJSON().authorization) {
     reqConfig.headers.authorization = `Bearer ${token}`;
   }
+
+  // If data is FormData, remove Content-Type to let axios set it with boundary
+  if (reqConfig.data instanceof FormData) {
+    delete reqConfig.headers["Content-Type"];
+  }
+
   return reqConfig;
 });
 
