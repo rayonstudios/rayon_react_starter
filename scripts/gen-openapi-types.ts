@@ -97,6 +97,7 @@ async function main(): Promise<void> {
     console.log("Generating TypeScript types");
     const openApiSchema = fs.readFileSync(tempFilePath, "utf8");
     const ast = await openapiTS(openApiSchema, {
+      enum: true,
       transform(schemaObject) {
         // handle date-time type
         if (schemaObject.format === "date-time") {

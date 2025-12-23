@@ -27,8 +27,8 @@ export default function MainMenu({ closeOnNavigate = false, ...props }) {
       return routes.map((route, i) => {
         if (!route.menuItem) return null;
 
-        if (route.allowedRoles?.includes(Role.ADMIN))
-          route.allowedRoles.push(Role.SUPER_ADMIN);
+        if (route.allowedRoles?.includes(Role.admin))
+          route.allowedRoles.push(Role.super_admin);
         if (
           Array.isArray(route.allowedRoles) &&
           !route.allowedRoles.includes(role as Role)
