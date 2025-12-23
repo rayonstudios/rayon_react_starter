@@ -1,4 +1,4 @@
-name: Deploy to Firebase Hosting - Prod
+name: Deploy to Cloudflare Workers - Prod
 "on":
   push:
     branches:
@@ -7,20 +7,34 @@ name: Deploy to Firebase Hosting - Prod
 
 jobs:
   build_and_deploy:
-    permissions: write-all
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - run: npm ci && npm run build:prod
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: "yarn"
+
+      - name: Install dependencies and build
+        run: yarn install --frozen-lockfile && npm run build:prod
         env:
           CI: false
-          VITE_FIREBASE_API_KEY: "${{ secrets.VITE_FIREBASE_API_KEY }}"
 
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Create Cloudflare Pages Project
+        uses: cloudflare/wrangler-action@v3
         with:
-          repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.GCP_SA }}"
-          channelId: live
-          projectId: rayon-gcp-starter
-          target: prod
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages project create rayon-react-starter-prod --production-branch main
+        continue-on-error: true
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name rayon-react-starter-prod
