@@ -8,6 +8,7 @@ import { onMessage } from "firebase/messaging";
 import React, { PropsWithChildren, useEffect } from "react";
 import { createUseStyles } from "react-jss";
 import pkgJson from "../../../../package.json";
+import NotificationPrompt from "../../components/notification-prompt/notification-prompt";
 import { firebase } from "../../firebase/firebase.service";
 import EmptyLayout from "../empty-layout";
 import Header from "./header";
@@ -60,6 +61,7 @@ const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
         <Layout>
           <Header />
           <Layout.Content className="p-8 flex-1 flex flex-col overflow-y-auto">
+            <NotificationPrompt />
             {children}
           </Layout.Content>
           <Layout.Footer className={cn("p-4 text-center", classes.footer)}>
