@@ -448,15 +448,12 @@ export interface components {
       error: string | null;
     };
     /** @enum {string} */
-    Role: "user" | "admin" | "super-admin";
+    Role: Role;
     /** @enum {string} */
-    "SortFields_SanitizedUser.created_at-or-updated_at-or-name_":
-      | "created_at"
-      | "updated_at"
-      | "name";
+    "SortFields_SanitizedUser.created_at-or-updated_at-or-name_": SortFields_SanitizedUserCreated_atOrUpdated_atOrName_;
     UserSortFields: components["schemas"]["SortFields_SanitizedUser.created_at-or-updated_at-or-name_"];
     /** @enum {string} */
-    SortOrder: "asc" | "desc";
+    SortOrder: SortOrder;
     UserFetchList: {
       sortOrder?: components["schemas"]["SortOrder"];
       sortField?: components["schemas"]["UserSortFields"];
@@ -515,11 +512,7 @@ export interface components {
       error: string | null;
     };
     /** @enum {string} */
-    "SortFields_Post.created_at-or-updated_at-or-title-or-views_":
-      | "created_at"
-      | "updated_at"
-      | "title"
-      | "views";
+    "SortFields_Post.created_at-or-updated_at-or-title-or-views_": SortFields_PostCreated_atOrUpdated_atOrTitleOrViews_;
     PostSortFields: components["schemas"]["SortFields_Post.created_at-or-updated_at-or-title-or-views_"];
     PostFetchList: {
       sortOrder?: components["schemas"]["SortOrder"];
@@ -650,7 +643,7 @@ export interface components {
       error: string | null;
     };
     /** @enum {string} */
-    DefaultSortFields: "created_at" | "updated_at";
+    DefaultSortFields: DefaultSortFields;
     NotificationFetchList: {
       sortOrder?: components["schemas"]["SortOrder"];
       sortField?: components["schemas"]["DefaultSortFields"];
@@ -675,13 +668,13 @@ export interface components {
       url: string;
     };
     /** @enum {string} */
-    "BgJobType.SEND_NOTIFICATION": "send-notification";
+    "BgJobType.SEND_NOTIFICATION": BgJobTypeSEND_NOTIFICATION;
     /** @enum {string} */
-    "NotificationEvent.GENERAL": "general";
+    "NotificationEvent.GENERAL": NotificationEventGENERAL;
     /** @enum {string} */
-    "NotificationEvent.SIGN_UP": "sign-up";
+    "NotificationEvent.SIGN_UP": NotificationEventSIGN_UP;
     /** @enum {string} */
-    "NotificationEvent.NEW_POST": "new-post";
+    "NotificationEvent.NEW_POST": NotificationEventNEW_POST;
     NotificationPayload: {
       /** Format: date-time */
       timestamp?: Date;
@@ -706,16 +699,11 @@ export interface components {
         }
     );
     /** @enum {string} */
-    "BgJobType.RESIZE_IMAGE": "resize-image";
+    "BgJobType.RESIZE_IMAGE": BgJobTypeRESIZE_IMAGE;
     /** @enum {string} */
-    "Prisma.ModelName":
-      | "otps"
-      | "posts"
-      | "users"
-      | "notifications"
-      | "userNotifications";
+    "Prisma.ModelName": PrismaModelName;
     /** @enum {string} */
-    IMAGE_SIZE: "small" | "medium" | "large";
+    IMAGE_SIZE: IMAGE_SIZE;
     Resizeconfig: {
       sizes: components["schemas"]["IMAGE_SIZE"][];
       img_field: string;
@@ -727,7 +715,7 @@ export interface components {
       url: string;
     };
     /** @enum {string} */
-    "BgJobType.DEMO_JOB": "demo-job";
+    "BgJobType.DEMO_JOB": BgJobTypeDEMO_JOB;
     "Expand_BgJobData-and-_taskId-string--taskMetadata-GenericObject__":
       | {
           createdBy?: string;
@@ -761,9 +749,9 @@ export interface components {
         };
     BgJobHandlerBody: components["schemas"]["Expand_BgJobData-and-_taskId-string--taskMetadata-GenericObject__"];
     /** @enum {string} */
-    BgJobStatus: "pending" | "in-progress" | "success" | "failed";
+    BgJobStatus: BgJobStatus;
     /** @enum {string} */
-    BgJobType: "send-notification" | "resize-image" | "demo-job";
+    BgJobType: BgJobType;
     BgJob: {
       errorMessage?: string;
       resultDetails?: components["schemas"]["GenericObject"];
@@ -1621,4 +1609,69 @@ export interface operations {
       };
     };
   };
+}
+export enum Role {
+  user = "user",
+  admin = "admin",
+  super_admin = "super-admin",
+}
+export enum SortFields_SanitizedUserCreated_atOrUpdated_atOrName_ {
+  created_at = "created_at",
+  updated_at = "updated_at",
+  name = "name",
+}
+export enum SortOrder {
+  asc = "asc",
+  desc = "desc",
+}
+export enum SortFields_PostCreated_atOrUpdated_atOrTitleOrViews_ {
+  created_at = "created_at",
+  updated_at = "updated_at",
+  title = "title",
+  views = "views",
+}
+export enum DefaultSortFields {
+  created_at = "created_at",
+  updated_at = "updated_at",
+}
+export enum BgJobTypeSEND_NOTIFICATION {
+  send_notification = "send-notification",
+}
+export enum NotificationEventGENERAL {
+  general = "general",
+}
+export enum NotificationEventSIGN_UP {
+  sign_up = "sign-up",
+}
+export enum NotificationEventNEW_POST {
+  new_post = "new-post",
+}
+export enum BgJobTypeRESIZE_IMAGE {
+  resize_image = "resize-image",
+}
+export enum PrismaModelName {
+  otps = "otps",
+  posts = "posts",
+  users = "users",
+  notifications = "notifications",
+  userNotifications = "userNotifications",
+}
+export enum IMAGE_SIZE {
+  small = "small",
+  medium = "medium",
+  large = "large",
+}
+export enum BgJobTypeDEMO_JOB {
+  demo_job = "demo-job",
+}
+export enum BgJobStatus {
+  pending = "pending",
+  in_progress = "in-progress",
+  success = "success",
+  failed = "failed",
+}
+export enum BgJobType {
+  send_notification = "send-notification",
+  resize_image = "resize-image",
+  demo_job = "demo-job",
 }

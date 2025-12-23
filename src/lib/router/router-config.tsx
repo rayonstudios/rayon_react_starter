@@ -65,7 +65,7 @@ export const useRouterConfig = (): RouterConfig[] => {
       route: {
         path: "/users",
       },
-      allowedRoles: [Role.SUPER_ADMIN],
+      allowedRoles: [Role.super_admin],
     },
     {
       layoutType: "dashboard",

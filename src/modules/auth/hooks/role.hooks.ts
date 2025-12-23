@@ -1,10 +1,6 @@
 import { useAppSelector } from "@/lib/redux/store";
 
-export enum Role {
-  USER = "user",
-  ADMIN = "admin",
-  SUPER_ADMIN = "super-admin",
-}
+export { Role } from "@/lib/types/openapi-fetch.d";
 
 export const useRole = () => {
   const role = useAppSelector((state) => state.profile.data?.role);

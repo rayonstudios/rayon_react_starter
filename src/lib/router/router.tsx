@@ -184,7 +184,7 @@ const RoleCheckWrapper: React.FC<
   const dispatch = useAppDispatch();
   const { status: authStatus } = useAuth();
 
-  if (allowedRoles?.includes(Role.ADMIN)) allowedRoles.push(Role.SUPER_ADMIN);
+  if (allowedRoles?.includes(Role.admin)) allowedRoles.push(Role.super_admin);
 
   useEffect(() => {
     if (authStatus === "authenticated") {
