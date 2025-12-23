@@ -22,14 +22,27 @@ const apiClient = createClient<paths>({
       let data = undefined;
       if (input.body) {
         const contentType = input.headers.get("Content-Type");
+        console.log("Request Content-Type:", contentType);
+
         if (contentType?.includes("application/json")) {
           data = await input.json();
         } else if (contentType?.includes("multipart/form-data")) {
           data = await input.formData();
+          // Remove Content-Type header for FormData - let axios set it with boundary
+          delete headers["content-type"];
+          delete headers["Content-Type"];
         } else {
           data = input.body;
         }
       }
+
+      console.log("Axios request config:", {
+        url: url.replace(import.meta.env.VITE_API_BASE_URL, ""),
+        method,
+        hasData: !!data,
+        dataType: data?.constructor?.name,
+        headers: Object.keys(headers),
+      });
 
       // Convert fetch API request to Axios format
       const axiosConfig = {
