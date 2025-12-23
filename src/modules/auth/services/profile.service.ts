@@ -1,5 +1,5 @@
 import apiClient, { withApiResponseHandling } from "@/lib/openapi-fetch.config";
-import { isProd, objectToFormData } from "@/lib/utils/misc.utils";
+import { isDev, objectToFormData } from "@/lib/utils/misc.utils";
 import { getToken } from "firebase/messaging";
 import { firebase } from "../../../lib/firebase/firebase.service";
 import { ProfileUpdateBody } from "../types/profile.types";
@@ -38,43 +38,24 @@ async function deleteFcmToken(fcmToken: string) {
   return data;
 }
 
-const getServiceWorkerRegistration = async () => {
-  return await navigator.serviceWorker.register(
-    isProd()
-      ? "/firebase-messaging-sw-prod.js"
-      : "/firebase-messaging-sw-dev.js"
+export const getFcmToken = async () => {
+  const swRegistration = await navigator.serviceWorker.register(
+    isDev() ? "/firebase-messaging-sw-dev.js" : "/firebase-messaging-sw-prod.js"
   );
-};
+  await navigator.serviceWorker.ready;
+  const token = await getToken(firebase.messaging, {
+    vapidKey: isDev()
+      ? "BIzUscuugFLRQheEyFd8c9ozexgyNhKc5B6gLJ0Ycu-lMsnTZofPSRUJOMOU7sGvUebBIKeJ7biDXTTDf5XDI6s"
+      : "BIzUscuugFLRQheEyFd8c9ozexgyNhKc5B6gLJ0Ycu-lMsnTZofPSRUJOMOU7sGvUebBIKeJ7biDXTTDf5XDI6s",
+    serviceWorkerRegistration: swRegistration,
+  });
 
-const getVapidKey = () => {
-  return isProd()
-    ? "BIzUscuugFLRQheEyFd8c9ozexgyNhKc5B6gLJ0Ycu-lMsnTZofPSRUJOMOU7sGvUebBIKeJ7biDXTTDf5XDI6s"
-    : "BIzUscuugFLRQheEyFd8c9ozexgyNhKc5B6gLJ0Ycu-lMsnTZofPSRUJOMOU7sGvUebBIKeJ7biDXTTDf5XDI6s";
-};
-
-const getFcmToken = async () => {
-  try {
-    const swRegistration = await getServiceWorkerRegistration();
-    console.log("Service worker registered:", swRegistration);
-
-    const token = await getToken(firebase.messaging, {
-      vapidKey: getVapidKey(),
-      serviceWorkerRegistration: swRegistration,
-    });
-
-    console.log("FCM token obtained:", token);
-    return token;
-  } catch (error) {
-    console.error("Error getting FCM token:", error);
-    return null;
-  }
+  return token;
 };
 const profileService = {
   fetch,
   update,
   getFcmToken,
   deleteFcmToken,
-  getServiceWorkerRegistration,
-  getVapidKey,
 };
 export default profileService;

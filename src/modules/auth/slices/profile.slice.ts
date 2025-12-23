@@ -31,64 +31,33 @@ const deleteFcmtoken = createAsyncThunk(`${name}/deleteFcmtoken`, async () => {
 const upsertFcmToken = createAsyncThunk(
   `${name}/upsertFcmToken`,
   async (_, { getState, dispatch }) => {
-    try {
-      // Check if Notification API is available
-      if (!("Notification" in window)) {
-        console.warn("Push notifications are not supported in this browser");
-        return;
-      }
+    const prevTokens = (getState() as RootState).profile.data?.fcm_tokens || [];
 
-      // Ensure profile is loaded
-      const state = getState() as RootState;
-      if (!state.profile.data) {
-        console.log("Fetching profile data...");
-        await dispatch(fetch()).unwrap();
-      }
+    if (!("Notification" in window)) return;
 
-      // Request permission
-      const perm = await Notification.requestPermission();
-      if (perm !== "granted") {
-        console.log("Notification permission denied");
-        return;
-      }
+    // Only proceed if permission is already granted or default
+    // Don't automatically request permission on page load
+    const currentPermission = Notification.permission;
 
-      // Get FCM token
+    if (currentPermission === "denied") {
+      console.log("Notification permission denied");
+      return;
+    }
+
+    // If permission is already granted, get the token
+    if (currentPermission === "granted") {
       const token = await profileService.getFcmToken();
-      console.log("FCM token:", token);
-
-      if (!token) {
-        console.error("Failed to get FCM token");
-        return;
-      }
-
-      // Check if token already exists
-      const updatedState = getState() as RootState;
-      const prevTokens = updatedState.profile.data?.fcm_tokens || [];
-
-      if (!prevTokens.includes(token)) {
-        console.log("Registering new FCM token...");
-        await dispatch(
+      if (token && !prevTokens.includes(token)) {
+        dispatch(
           profileActions.update({
             added_fcm_token: token,
           })
-        ).unwrap();
-        console.log("FCM token registered successfully");
-      } else {
-        console.log("FCM token already registered");
+        );
       }
-    } catch (error: any) {
-      console.error("Error upserting FCM token:", {
-        message: error?.message,
-        code: error?.code,
-        response: error?.response?.data,
-        status: error?.response?.status,
-        details: error,
-      });
-
-      // Don't throw error to prevent app from breaking if FCM fails
-      // Just log it for debugging
-      console.warn(
-        "FCM token registration failed, but continuing app initialization"
+    } else {
+      // Permission is "default" - log but don't request
+      console.log(
+        "Notification permission not yet granted. User needs to enable notifications manually."
       );
     }
   }

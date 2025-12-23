@@ -3,10 +3,12 @@ import { JSSTheme } from "@/lib/types/misc";
 import { isDev, isTest } from "@/lib/utils/misc.utils";
 import { cn } from "@/lib/utils/styles.utils";
 import { profileActions } from "@/modules/auth/slices/profile.slice";
-import { Layout, Typography } from "antd";
+import { Layout, Typography, notification } from "antd";
+import { onMessage } from "firebase/messaging";
 import React, { PropsWithChildren, useEffect } from "react";
 import { createUseStyles } from "react-jss";
 import pkgJson from "../../../../package.json";
+import { firebase } from "../../firebase/firebase.service";
 import EmptyLayout from "../empty-layout";
 import Header from "./header";
 import Sidebar from "./sidebar";
@@ -32,16 +34,24 @@ const DashboardLayout: React.FC<PropsWithChildren> = ({ children }) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(profileActions.upsertFcmToken())
-      .unwrap()
-      .then(() => {
-        console.log("FCM token setup completed successfully");
-      })
-      .catch(() => {
-        // Error is already logged in the slice, no need to log again
-        console.log("FCM token setup skipped or failed");
+    dispatch(profileActions.upsertFcmToken());
+  }, []);
+
+  // Listen for foreground messages (when app is in focus)
+  useEffect(() => {
+    const unsubscribe = onMessage(firebase.messaging, (payload) => {
+      console.log("notification received fg", payload);
+
+      notification.open({
+        message: payload.notification?.title || "New Notification",
+        description: payload.notification?.body || "",
+        placement: "topRight",
+        duration: 5,
       });
-  }, [dispatch]);
+    });
+
+    return unsubscribe;
+  }, []);
 
   return (
     <EmptyLayout>
