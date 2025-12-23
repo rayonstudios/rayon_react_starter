@@ -23,6 +23,7 @@ jobs:
         run: npm ci && npm run build:prod
         env:
           CI: false
+          VITE_FIREBASE_API_KEY: "${{ secrets.VITE_FIREBASE_API_KEY }}"
 
       - name: Create Cloudflare Pages Project
         uses: cloudflare/wrangler-action@v3
