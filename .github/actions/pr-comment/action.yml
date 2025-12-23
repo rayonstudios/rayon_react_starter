@@ -1,0 +1,58 @@
+name: "PR Preview Comment"
+description: "Add or update a PR preview comment"
+inputs:
+  deploy-url:
+    description: "The preview URL"
+    required: true
+  sha:
+    description: "Commit SHA"
+    required: true
+  pr-number:
+    description: "Pull Request Number"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/github-script@v6
+      env:
+        DEPLOY_URL: ${{ inputs.deploy-url }}
+        SHA: ${{ inputs.sha }}
+        PR_NUMBER: ${{ inputs.pr-number }}
+      with:
+        script: |
+          const deployUrl = process.env.DEPLOY_URL;
+          const sha = process.env.SHA.substring(0, 7);
+          const prNumber = parseInt(process.env.PR_NUMBER);
+
+          const body = `Preview Deployed 🚀
+
+          Visit the preview URL for this PR (updated for commit \`${sha}\`):
+
+          **[${deployUrl}](${deployUrl})**`;
+
+          const { data: comments } = await github.rest.issues.listComments({
+            issue_number: prNumber,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+          });
+
+          const botComment = comments.find(comment => 
+            comment.user.type === 'Bot' && 
+            comment.body.includes('Preview Deployed!')
+          );
+
+          if (botComment) {
+            await github.rest.issues.updateComment({
+              comment_id: botComment.id,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+          } else {
+            await github.rest.issues.createComment({
+              issue_number: prNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+          }

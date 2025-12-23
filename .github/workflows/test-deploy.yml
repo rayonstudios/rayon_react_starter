@@ -1,4 +1,4 @@
-name: Deploy to Firebase Hosting - Test
+name: Deploy to Cloudflare Workers - Test
 "on":
   push:
     branches:
@@ -7,20 +7,35 @@ name: Deploy to Firebase Hosting - Test
 
 jobs:
   build_and_deploy:
-    permissions: write-all
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - run: npm ci && npm run build:test
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies and build
+        run: npm ci && npm run build:test
         env:
           CI: false
           VITE_FIREBASE_API_KEY: "${{ secrets.VITE_FIREBASE_API_KEY }}"
 
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Create Cloudflare Pages Project
+        uses: cloudflare/wrangler-action@v3
         with:
-          repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.GCP_SA }}"
-          channelId: live
-          projectId: rayon-gcp-starter
-          target: test
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages project create rayon-react-starter-test --production-branch test
+        continue-on-error: true
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name rayon-react-starter-test

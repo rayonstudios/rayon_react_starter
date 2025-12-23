@@ -1,4 +1,4 @@
-name: Preview deploy to Firebase Hosting on PR (main)
+name: Preview deploy to Cloudflare Workers on PR (main)
 on:
   pull_request:
     branches:
@@ -6,19 +6,44 @@ on:
 
 jobs:
   build_and_preview:
-    permissions: write-all
+    permissions:
+      contents: read
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - run: npm ci && npm run build:prod
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: "npm"
+
+      - name: Install dependencies and build
+        run: npm ci && npm run build:prod
         env:
           CI: false
           VITE_FIREBASE_API_KEY: "${{ secrets.VITE_FIREBASE_API_KEY }}"
 
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Create Cloudflare Pages Project
+        uses: cloudflare/wrangler-action@v3
         with:
-          repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.GCP_SA }}"
-          projectId: rayon-gcp-starter
-          target: prod
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages project create rayon-react-starter-prod --production-branch main
+        continue-on-error: true
+
+      - name: Deploy preview to Cloudflare Pages
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name rayon-react-starter-prod --branch "pr-${{ github.event.pull_request.number }}"
+
+      - name: Comment on PR
+        uses: ./.github/actions/pr-comment
+        with:
+          deploy-url: https://pr-${{ github.event.pull_request.number }}.rayon-react-starter-prod.pages.dev
+          sha: ${{ github.event.pull_request.head.sha }}
+          pr-number: ${{ github.event.pull_request.number }}
