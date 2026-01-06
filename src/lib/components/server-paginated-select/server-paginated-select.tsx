@@ -118,11 +118,25 @@ export default function ServerPaginatedSelect({
       !data.find((item) => valueResolver(item) === val) &&
       fetchDefaultValue
     ) {
-      fetchDefaultValue(val)
-        .then((item) =>
-          setData((prev) => uniqBy(prev.concat(item.data), "id") as any[])
-        )
-        .catch(console.error);
+      if (Array.isArray(val)) {
+        Promise.all(val.map((id: string) => fetchDefaultValue(id)))
+          .then((items) => {
+            setData(
+              (prev) =>
+                uniqBy(
+                  prev.concat(...items.map((item) => item.data)),
+                  "id"
+                ) as any[]
+            );
+          })
+          .catch(console.error);
+      } else {
+        fetchDefaultValue(val)
+          .then((item) =>
+            setData((prev) => uniqBy(prev.concat(item.data), "id") as any[])
+          )
+          .catch(console.error);
+      }
     }
   }, [props?.defaultValue]);
 
