@@ -88,7 +88,7 @@ export default function ServerPaginatedTable<T extends AnyObject>({
     current: 1,
     pageSize,
     ...filters?.reduce(
-      (acc, filter) => ({ ...acc, [`filter.${filter.key}`]: "" }),
+      (acc, filter) => ({ ...acc, [`filter.${filter.key}`]: undefined }),
       {}
     ),
     ["sort.field"]: defaultSortField,
